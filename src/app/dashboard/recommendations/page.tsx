@@ -108,16 +108,16 @@ export default function RecommendationsPage() {
             <Sparkles className="h-5 w-5 text-indigo-400" />
             <span>AI Recommendation Engine</span>
           </h1>
-          <p className="text-xs text-zinc-500 mt-0.5">Contextual reading priority, related files grouping, and research topics compiled by AI.</p>
+          <p className="text-xs text-muted mt-0.5">Contextual reading priority, related files grouping, and research topics compiled by AI.</p>
         </div>
       </div>
 
       {/* Empty state when no documents uploaded */}
       {noDocuments ? (
-        <div className="rounded-2xl border border-dashed border-zinc-900 bg-zinc-955 p-16 text-center max-w-lg mx-auto space-y-4">
+        <div className="rounded-2xl border border-dashed border-border bg-card-bg p-16 text-center max-w-lg mx-auto space-y-4">
           <FileText className="h-12 w-12 text-zinc-700 mx-auto" />
-          <h3 className="text-sm font-bold text-zinc-300">No Recommendations Available</h3>
-          <p className="text-xs text-zinc-500 max-w-xs mx-auto leading-relaxed">
+          <h3 className="text-sm font-bold text-foreground">No Recommendations Available</h3>
+          <p className="text-xs text-muted max-w-xs mx-auto leading-relaxed">
             We need documents uploaded in your database library to build relationship linkages and target reading topics.
           </p>
           <div className="pt-2">
@@ -132,11 +132,11 @@ export default function RecommendationsPage() {
         /* Loading Skeleton pulses */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 animate-pulse">
           <div className="lg:col-span-8 space-y-6">
-            <div className="h-44 bg-zinc-950/40 border border-zinc-900 rounded-2xl" />
-            <div className="h-48 bg-zinc-950/40 border border-zinc-900 rounded-2xl" />
-            <div className="h-48 bg-zinc-950/40 border border-zinc-900 rounded-2xl" />
+            <div className="h-44 bg-background/40 border border-border rounded-2xl" />
+            <div className="h-48 bg-background/40 border border-border rounded-2xl" />
+            <div className="h-48 bg-background/40 border border-border rounded-2xl" />
           </div>
-          <div className="lg:col-span-4 h-96 bg-zinc-950/40 border border-zinc-900 rounded-2xl" />
+          <div className="lg:col-span-4 h-96 bg-background/40 border border-border rounded-2xl" />
         </div>
       ) : latestError ? (
         /* Error Warning */
@@ -159,7 +159,7 @@ export default function RecommendationsPage() {
           <div className="lg:col-span-8 space-y-8">
             
             {/* User Refinement control form */}
-            <section className="bg-zinc-950 border border-zinc-900 p-5 rounded-2xl space-y-4 shadow-sm">
+            <section className="bg-background border border-border p-5 rounded-2xl space-y-4 shadow-sm">
               <h3 className="text-xs font-bold text-white uppercase tracking-wider">Refine AI Recommendations</h3>
               <form onSubmit={handleRefineSubmit} className="flex gap-2">
                 <input 
@@ -168,7 +168,7 @@ export default function RecommendationsPage() {
                   onChange={(e) => setRefinementText(e.target.value)}
                   placeholder="e.g., Focus more on tax compliance / Show external data science resources..."
                   disabled={refineMutation.isPending}
-                  className="flex-1 h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-850 focus:border-indigo-500/80 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-600 transition-colors"
+                  className="flex-1 h-10.5 bg-card-bg border border-border hover:border-border focus:border-indigo-500/80 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-600 transition-colors"
                 />
                 <button
                   type="submit"
@@ -205,10 +205,10 @@ export default function RecommendationsPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {activeRecommendation.recommendations.relatedDocuments.map((doc, idx) => (
-                    <div key={idx} className="bg-zinc-950 border border-zinc-900 rounded-2xl p-5 flex flex-col justify-between h-36 hover:border-accent/40 shadow-sm transition-all">
+                    <div key={idx} className="bg-background border border-border rounded-2xl p-5 flex flex-col justify-between h-36 hover:border-accent/40 shadow-sm transition-all">
                       <div className="space-y-1.5">
                         <h4 className="text-xs font-bold text-white truncate max-w-sm" title={doc.title}>{doc.title}</h4>
-                        <p className="text-[10px] text-zinc-400 leading-relaxed line-clamp-2">{doc.reason}</p>
+                        <p className="text-[10px] text-muted leading-relaxed line-clamp-2">{doc.reason}</p>
                       </div>
                       {doc.documentId ? (
                         <Link href={`/documents/${doc.documentId}`} className="text-[10px] font-bold text-indigo-400 hover:underline flex items-center gap-1.5 mt-2">
@@ -233,10 +233,10 @@ export default function RecommendationsPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {activeRecommendation.recommendations.nextToRead.map((doc, idx) => (
-                    <div key={idx} className="bg-zinc-950 border border-zinc-900 rounded-2xl p-5 flex flex-col justify-between h-36 hover:border-accent/40 shadow-sm transition-all">
+                    <div key={idx} className="bg-background border border-border rounded-2xl p-5 flex flex-col justify-between h-36 hover:border-accent/40 shadow-sm transition-all">
                       <div className="space-y-1.5">
                         <h4 className="text-xs font-bold text-white truncate max-w-sm" title={doc.title}>{doc.title}</h4>
-                        <p className="text-[10px] text-zinc-400 leading-relaxed line-clamp-2">{doc.reason}</p>
+                        <p className="text-[10px] text-muted leading-relaxed line-clamp-2">{doc.reason}</p>
                       </div>
                       {doc.documentId ? (
                         <Link href={`/documents/${doc.documentId}`} className="text-[10px] font-bold text-indigo-400 hover:underline flex items-center gap-1.5 mt-2">
@@ -254,7 +254,7 @@ export default function RecommendationsPage() {
 
             {/* 3. Similar Topics */}
             {activeRecommendation?.recommendations.similarTopics && activeRecommendation.recommendations.similarTopics.length > 0 && (
-              <section className="bg-zinc-950/40 border border-zinc-900 p-6 rounded-2xl space-y-4 shadow-sm">
+              <section className="bg-background/40 border border-border p-6 rounded-2xl space-y-4 shadow-sm">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <Layers className="h-4.5 w-4.5 text-indigo-400" />
                   <span>Recurrent Conceptual Topics</span>
@@ -263,7 +263,7 @@ export default function RecommendationsPage() {
                   {activeRecommendation.recommendations.similarTopics.map((topic, idx) => (
                     <div key={idx} className="space-y-1">
                       <h4 className="text-xs font-bold text-white">{topic.topic}</h4>
-                      <p className="text-[11px] text-zinc-400 leading-relaxed">{topic.description}</p>
+                      <p className="text-[11px] text-muted leading-relaxed">{topic.description}</p>
                     </div>
                   ))}
                 </div>
@@ -272,17 +272,17 @@ export default function RecommendationsPage() {
 
             {/* 4. Learning Resources */}
             {activeRecommendation?.recommendations.learningResources && activeRecommendation.recommendations.learningResources.length > 0 && (
-              <section className="bg-zinc-950/40 border border-zinc-900 p-6 rounded-2xl space-y-4 shadow-sm">
+              <section className="bg-background/40 border border-border p-6 rounded-2xl space-y-4 shadow-sm">
                 <h3 className="text-sm font-bold text-white flex items-center gap-2">
                   <HelpCircle className="h-4.5 w-4.5 text-indigo-400" />
                   <span>Suggested External Research & Learning Resources</span>
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {activeRecommendation.recommendations.learningResources.map((res, idx) => (
-                    <div key={idx} className="bg-zinc-955 border border-zinc-900 rounded-xl p-4 flex flex-col justify-between min-h-[140px] hover:border-zinc-800 transition-colors">
+                    <div key={idx} className="bg-card-bg border border-border rounded-xl p-4 flex flex-col justify-between min-h-[140px] hover:border-border transition-colors">
                       <div className="space-y-1">
                         <h4 className="text-[11px] font-bold text-white leading-tight">{res.title}</h4>
-                        <p className="text-[10px] text-zinc-400 leading-normal">{res.description}</p>
+                        <p className="text-[10px] text-muted leading-normal">{res.description}</p>
                       </div>
                       <a 
                         href={`https://www.google.com/search?q=${encodeURIComponent(res.searchQuery)}`} 
@@ -302,15 +302,15 @@ export default function RecommendationsPage() {
           </div>
 
           {/* Right Column: Recommendation History */}
-          <div className="lg:col-span-4 bg-zinc-950 border border-zinc-900 rounded-2xl p-5 space-y-4 shadow-sm sticky top-20">
+          <div className="lg:col-span-4 bg-background border border-border rounded-2xl p-5 space-y-4 shadow-sm sticky top-20">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <History className="h-4 w-4 text-zinc-400" />
+              <History className="h-4 w-4 text-muted" />
               <span>Refinement History</span>
             </h3>
             {historyLoading ? (
-              <div className="h-32 bg-zinc-955 rounded-xl animate-pulse" />
+              <div className="h-32 bg-card-bg rounded-xl animate-pulse" />
             ) : historyData.history.length === 0 ? (
-              <p className="text-[10px] text-zinc-500 italic">No history logged yet.</p>
+              <p className="text-[10px] text-muted italic">No history logged yet.</p>
             ) : (
               <div className="space-y-2 max-h-[450px] overflow-y-auto pr-1">
                 {historyData.history.map((hist) => {
@@ -329,18 +329,18 @@ export default function RecommendationsPage() {
                       className={`w-full text-left p-3.5 rounded-xl border text-[11px] transition-all flex items-start justify-between gap-2 cursor-pointer ${
                         isActive
                           ? 'bg-indigo-600 border-indigo-600 text-white font-bold'
-                          : 'bg-zinc-955 border-zinc-900 text-zinc-400 hover:text-white hover:border-zinc-800'
+                          : 'bg-card-bg border-border text-muted hover:text-white hover:border-border'
                       }`}
                     >
                       <div className="space-y-1 min-w-0">
-                        <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold">
+                        <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold">
                           {dateStr}
                         </span>
                         <span className="block truncate">
                           {hist.userRefinement ? `"${hist.userRefinement}"` : 'Initial Recommendation'}
                         </span>
                       </div>
-                      <ChevronRight className="h-3.5 w-3.5 shrink-0 mt-2 text-zinc-650" />
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 mt-2 text-muted" />
                     </button>
                   );
                 })}

@@ -34,10 +34,10 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
   // Render empty state if there are no documents in the database
   if (totalDocuments === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-zinc-900 bg-zinc-950/10 p-16 text-center max-w-lg mx-auto space-y-4">
+      <div className="rounded-2xl border border-dashed border-border bg-background/10 p-16 text-center max-w-lg mx-auto space-y-4">
         <Database className="h-12 w-12 text-zinc-700 mx-auto" />
-        <h3 className="text-sm font-bold text-zinc-300">No Analytics Data Yet</h3>
-        <p className="text-xs text-zinc-500 max-w-xs mx-auto leading-relaxed">
+        <h3 className="text-sm font-bold text-foreground">No Analytics Data Yet</h3>
+        <p className="text-xs text-muted max-w-xs mx-auto leading-relaxed">
           Upload documents and interact with our AI agents to start generating MongoDB storage counts, category splits, and activity timelines.
         </p>
       </div>
@@ -50,45 +50,45 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         
         {/* Total Documents Card */}
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 flex items-center gap-4 shadow-sm hover:border-zinc-800 transition-colors">
+        <div className="rounded-2xl border border-border bg-background/40 p-6 flex items-center gap-4 shadow-sm hover:border-border transition-colors">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
             <FolderOpen className="h-6 w-6" />
           </div>
           <div>
-            <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Total Documents</p>
+            <p className="text-[10px] text-muted font-extrabold uppercase tracking-wider">Total Documents</p>
             <h3 className="text-2xl font-bold text-white mt-1">{totalDocuments}</h3>
           </div>
         </div>
 
         {/* AI Requests Card */}
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 flex items-center gap-4 shadow-sm hover:border-zinc-800 transition-colors">
+        <div className="rounded-2xl border border-border bg-background/40 p-6 flex items-center gap-4 shadow-sm hover:border-border transition-colors">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
             <Sparkles className="h-5.5 w-5.5" />
           </div>
           <div>
-            <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">AI Queries & Tasks</p>
+            <p className="text-[10px] text-muted font-extrabold uppercase tracking-wider">AI Queries & Tasks</p>
             <h3 className="text-2xl font-bold text-white mt-1">{totalAIRequests}</h3>
           </div>
         </div>
 
         {/* Total Storage Card */}
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 flex items-center gap-4 shadow-sm hover:border-zinc-800 transition-colors">
+        <div className="rounded-2xl border border-border bg-background/40 p-6 flex items-center gap-4 shadow-sm hover:border-border transition-colors">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
             <FileText className="h-6 w-6" />
           </div>
           <div>
-            <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Total Storage Size</p>
+            <p className="text-[10px] text-muted font-extrabold uppercase tracking-wider">Total Storage Size</p>
             <h3 className="text-2xl font-bold text-white mt-1">{formattedSize}</h3>
           </div>
         </div>
 
         {/* Status Completed Card */}
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 flex items-center gap-4 shadow-sm hover:border-zinc-800 transition-colors">
+        <div className="rounded-2xl border border-border bg-background/40 p-6 flex items-center gap-4 shadow-sm hover:border-border transition-colors">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
             <CircleDot className="h-6 w-6" />
           </div>
           <div>
-            <p className="text-[10px] text-zinc-500 font-extrabold uppercase tracking-wider">Fully Analyzed Docs</p>
+            <p className="text-[10px] text-muted font-extrabold uppercase tracking-wider">Fully Analyzed Docs</p>
             <h3 className="text-2xl font-bold text-white mt-1">{completedDocs}</h3>
           </div>
         </div>
@@ -99,10 +99,10 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Monthly Uploads - Area Chart */}
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 flex flex-col h-[380px] shadow-sm">
+        <div className="rounded-2xl border border-border bg-background/40 p-6 flex flex-col h-[380px] shadow-sm">
           <div className="mb-4">
             <h3 className="text-sm font-bold text-white">Monthly Upload Trends</h3>
-            <p className="text-xs text-zinc-500">File uploads aggregated monthly over the past 6 months</p>
+            <p className="text-xs text-muted">File uploads aggregated monthly over the past 6 months</p>
           </div>
           <div className="flex-1 w-full text-xs">
             <ResponsiveContainer width="100%" height="100%">
@@ -118,7 +118,7 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
                 <YAxis stroke="#52525b" tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#09090b', borderColor: '#27272a', borderRadius: '12px' }}
-                  labelClassName="text-zinc-400 text-xs font-bold"
+                  labelClassName="text-muted text-xs font-bold"
                   itemStyle={{ color: '#ffffff', fontSize: '12px' }}
                 />
                 <Area type="monotone" dataKey="uploads" stroke="#8b5cf6" strokeWidth={2} fillOpacity={1} fill="url(#monthlyTrend)" />
@@ -128,10 +128,10 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
         </div>
 
         {/* Documents by Category - Bar Chart */}
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 flex flex-col h-[380px] shadow-sm">
+        <div className="rounded-2xl border border-border bg-background/40 p-6 flex flex-col h-[380px] shadow-sm">
           <div className="mb-4">
             <h3 className="text-sm font-bold text-white">Documents by Category</h3>
-            <p className="text-xs text-zinc-500">Files volume grouped by category classifications</p>
+            <p className="text-xs text-muted">Files volume grouped by category classifications</p>
           </div>
           <div className="flex-1 w-full text-xs">
             <ResponsiveContainer width="100%" height="100%">
@@ -158,10 +158,10 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {/* File Format Distribution - Pie Chart */}
-        <div className="lg:col-span-1 rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 flex flex-col h-[380px] shadow-sm">
+        <div className="lg:col-span-1 rounded-2xl border border-border bg-background/40 p-6 flex flex-col h-[380px] shadow-sm">
           <div className="mb-4">
             <h3 className="text-sm font-bold text-white">File Format Distribution</h3>
-            <p className="text-xs text-zinc-500">Types of document extensions processed</p>
+            <p className="text-xs text-muted">Types of document extensions processed</p>
           </div>
           <div className="flex-1 w-full flex items-center justify-center text-xs">
             <ResponsiveContainer width="100%" height="100%">
@@ -195,10 +195,10 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
         </div>
 
         {/* 7-Day Upload Activity - Area Chart */}
-        <div className="lg:col-span-2 rounded-2xl border border-zinc-900 bg-zinc-950/40 p-6 flex flex-col h-[380px] shadow-sm">
+        <div className="lg:col-span-2 rounded-2xl border border-border bg-background/40 p-6 flex flex-col h-[380px] shadow-sm">
           <div className="mb-4">
             <h3 className="text-sm font-bold text-white">Upload Activity Timeline</h3>
-            <p className="text-xs text-zinc-500">Number of files processed during the past 7 days</p>
+            <p className="text-xs text-muted">Number of files processed during the past 7 days</p>
           </div>
           <div className="flex-1 w-full text-xs">
             <ResponsiveContainer width="100%" height="100%">
@@ -214,7 +214,7 @@ export function AnalyticsCharts({ data }: AnalyticsChartsProps) {
                 <YAxis stroke="#52525b" tickLine={false} axisLine={false} allowDecimals={false} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#09090b', borderColor: '#27272a', borderRadius: '12px' }}
-                  labelClassName="text-zinc-400 text-xs font-bold"
+                  labelClassName="text-muted text-xs font-bold"
                   itemStyle={{ color: '#ffffff', fontSize: '12px' }}
                 />
                 <Area type="monotone" dataKey="uploads" stroke="#ec4899" strokeWidth={2} fillOpacity={1} fill="url(#colorUploads)" />

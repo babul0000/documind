@@ -176,7 +176,7 @@ export function GlobalChatWidget() {
               <div className="h-full flex flex-col items-center justify-center text-center text-muted space-y-3.5 py-12">
                 <Sparkles className="h-10 w-10 text-indigo-500/25 animate-bounce" />
                 <div className="space-y-1">
-                  <h4 className="font-extrabold text-white text-xs">DocuMind General Agent</h4>
+                  <h4 className="font-extrabold text-foreground text-xs">DocuMind General Agent</h4>
                   <p className="text-[10px] text-zinc-500 max-w-[220px] mx-auto leading-relaxed">
                     Ask me how to upload files, verify guidelines compliance, or extract insights.
                   </p>

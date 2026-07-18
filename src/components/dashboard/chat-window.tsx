@@ -67,16 +67,16 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
   ];
 
   return (
-    <div className={cn('flex flex-col h-full bg-zinc-955 rounded-2xl border border-zinc-900 overflow-hidden', className)}>
+    <div className={cn('flex flex-col h-full bg-card-bg rounded-2xl border border-border overflow-hidden', className)}>
       {/* Header Bar */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-900 bg-zinc-950/40">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-background/40">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
             <Bot className="h-5 w-5" />
           </div>
           <div className="flex flex-col">
-            <h4 className="text-sm font-bold text-white">DocuMind AI Assistant</h4>
-            <span className="text-[10px] text-zinc-500 font-semibold tracking-wider uppercase">Context Aware QA</span>
+            <h4 className="text-sm font-bold text-foreground">DocuMind AI Assistant</h4>
+            <span className="text-[10px] text-muted font-semibold tracking-wider uppercase">Context Aware QA</span>
           </div>
         </div>
 
@@ -85,7 +85,7 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
           <button
             onClick={() => clearHistory()}
             disabled={isClearing}
-            className="h-8 px-3 rounded-lg border border-zinc-900 bg-zinc-950 text-xs font-bold text-zinc-500 hover:text-rose-400 hover:border-rose-500/20 hover:bg-rose-500/5 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+            className="h-8 px-3 rounded-lg border border-border bg-background text-xs font-bold text-muted hover:text-rose-400 hover:border-rose-500/20 hover:bg-rose-500/5 transition-all flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
             title="Clear Chat History"
           >
             {isClearing ? (
@@ -102,30 +102,30 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
       <div className="flex-1 overflow-y-auto p-6 space-y-5">
         {loadingMessages ? (
           <div className="flex flex-col items-center justify-center h-full gap-2">
-            <svg className="animate-spin h-5 w-5 text-zinc-650" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin h-5 w-5 text-muted" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
             </svg>
-            <span className="text-xs text-zinc-500 font-medium">Fetching history...</span>
+            <span className="text-xs text-muted font-medium">Fetching history...</span>
           </div>
         ) : messages.length === 0 && !isSending ? (
           /* Empty Initial Suggestions State */
           <div className="flex flex-col items-center justify-center h-full text-center max-w-sm mx-auto">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-900 border border-zinc-800 text-zinc-500 mb-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted-bg border border-border text-muted mb-4">
               <Sparkles className="h-6 w-6" />
             </div>
-            <h5 className="text-sm font-bold text-zinc-300">Start the conversation</h5>
-            <p className="text-xs text-zinc-500 mt-1.5 leading-relaxed">
+            <h5 className="text-sm font-bold text-foreground">Start the conversation</h5>
+            <p className="text-xs text-muted mt-1.5 leading-relaxed">
               Ask questions about contracts, structures, tasks, or request an explanation of the document text.
             </p>
             
             <div className="mt-6 w-full space-y-2 text-left">
-              <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block mb-1">Suggested prompts:</span>
+              <span className="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">Suggested prompts:</span>
               {initialSuggestions.map((prompt) => (
                 <button
                   key={prompt}
                   onClick={() => handleSuggestionClick(prompt)}
-                  className="w-full text-xs text-zinc-400 bg-zinc-900/40 border border-zinc-850 rounded-xl px-4 py-2.5 hover:border-indigo-500/20 hover:bg-zinc-900/80 transition-all text-left truncate font-semibold cursor-pointer"
+                  className="w-full text-xs text-muted bg-muted-bg/40 border border-border rounded-xl px-4 py-2.5 hover:border-indigo-500/20 hover:bg-muted-bg/80 transition-all text-left truncate font-semibold cursor-pointer"
                 >
                   {prompt}
                 </button>
@@ -148,7 +148,7 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
                     'flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl text-xs font-bold border',
                     isUser
                       ? 'bg-indigo-600 border-indigo-500 text-white'
-                      : 'bg-zinc-900 border-zinc-850 text-indigo-400'
+                      : 'bg-muted-bg border-border text-indigo-400'
                   )}>
                     {isUser ? <User className="h-4.5 w-4.5" /> : <Bot className="h-4.5 w-4.5" />}
                   </div>
@@ -159,7 +159,7 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
                       'rounded-2xl px-4 py-3 text-xs leading-relaxed shadow-sm font-medium whitespace-pre-wrap',
                       isUser
                         ? 'bg-indigo-600 text-white rounded-tr-none'
-                        : 'bg-zinc-900 border border-zinc-850 text-zinc-200 rounded-tl-none'
+                        : 'bg-muted-bg border border-border text-foreground rounded-tl-none'
                     )}>
                       {msg.text}
                     </div>
@@ -177,11 +177,11 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
             {/* SSE Accumulated Streaming Bubble */}
             {isSending && streamingText && (
               <div className="flex items-start gap-3.5 max-w-[85%]">
-                <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-850 text-indigo-400">
+                <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl bg-muted-bg border border-border text-indigo-400">
                   <Bot className="h-4.5 w-4.5" />
                 </div>
                 <div className="space-y-1">
-                  <div className="rounded-2xl px-4 py-3 text-xs leading-relaxed shadow-sm font-medium whitespace-pre-wrap bg-zinc-900 border border-zinc-850 text-zinc-200 rounded-tl-none">
+                  <div className="rounded-2xl px-4 py-3 text-xs leading-relaxed shadow-sm font-medium whitespace-pre-wrap bg-muted-bg border border-border text-foreground rounded-tl-none">
                     {streamingText}
                   </div>
                 </div>
@@ -191,11 +191,11 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
             {/* Bouncing Typing Dot Indicator while fetching first chunk */}
             {isSending && !streamingText && (
               <div className="flex items-start gap-3.5 max-w-[85%] animate-pulse">
-                <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-850 text-indigo-400">
+                <div className="flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl bg-muted-bg border border-border text-indigo-400">
                   <Bot className="h-4.5 w-4.5" />
                 </div>
                 <div className="space-y-1">
-                  <div className="bg-zinc-900 border border-zinc-850 rounded-2xl rounded-tl-none px-4 py-3 text-zinc-400 text-sm flex items-center gap-1.5">
+                  <div className="bg-muted-bg border border-border rounded-2xl rounded-tl-none px-4 py-3 text-muted text-sm flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-zinc-500 animate-bounce [animation-delay:-0.3s]"></span>
                     <span className="h-2 w-2 rounded-full bg-zinc-500 animate-bounce [animation-delay:-0.15s]"></span>
                     <span className="h-2 w-2 rounded-full bg-zinc-500 animate-bounce"></span>
@@ -206,14 +206,14 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
 
             {/* Dynamic Follow-up Prompt Buttons */}
             {!isSending && suggestedFollowUps.length > 0 && (
-              <div className="space-y-2 pt-4 border-t border-zinc-900/60 mt-4">
-                <span className="text-[9px] text-zinc-500 font-extrabold uppercase tracking-wider block">Suggested Questions:</span>
+              <div className="space-y-2 pt-4 border-t border-border/60 mt-4">
+                <span className="text-[9px] text-muted font-extrabold uppercase tracking-wider block">Suggested Questions:</span>
                 <div className="flex flex-col gap-1.5">
                   {suggestedFollowUps.map((prompt) => (
                     <button
                       key={prompt}
                       onClick={() => handleSuggestionClick(prompt)}
-                      className="w-full text-xs text-zinc-400 bg-zinc-900/40 border border-zinc-850 rounded-xl px-4 py-2.5 hover:border-indigo-500/20 hover:bg-zinc-900/80 transition-all text-left truncate font-semibold cursor-pointer"
+                      className="w-full text-xs text-muted bg-muted-bg/40 border border-border rounded-xl px-4 py-2.5 hover:border-indigo-500/20 hover:bg-muted-bg/80 transition-all text-left truncate font-semibold cursor-pointer"
                     >
                       {prompt}
                     </button>
@@ -228,13 +228,13 @@ export function ChatWindow({ documentId, className }: ChatWindowProps) {
       </div>
 
       {/* Message input field */}
-      <form onSubmit={handleSubmit} className="px-6 py-4 border-t border-zinc-900 bg-zinc-950/40 flex items-center gap-2">
+      <form onSubmit={handleSubmit} className="px-6 py-4 border-t border-border bg-background/40 flex items-center gap-2">
         <input
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder="Ask a question about the document..."
-          className="flex-1 bg-zinc-900 border border-zinc-800 text-white rounded-xl px-4 py-3 text-xs focus:border-indigo-500 focus:outline-none placeholder-zinc-550 transition-colors"
+          className="flex-1 bg-muted-bg border border-border text-white rounded-xl px-4 py-3 text-xs focus:border-indigo-500 focus:outline-none placeholder-zinc-550 transition-colors"
           disabled={isSending}
         />
         <Button

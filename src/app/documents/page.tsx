@@ -10,6 +10,10 @@ import {
 import { api } from '../../services/api';
 import { PublicNavbar } from '../../components/public/PublicNavbar';
 import { PublicFooter } from '../../components/public/PublicFooter';
+import { useAuth } from '../../hooks/use-auth';
+import { Sidebar } from '../../components/dashboard/sidebar';
+import { Navbar } from '../../components/dashboard/navbar';
+import { Spinner } from '../../components/ui/spinner';
 
 interface DocumentData {
   id: string;
@@ -30,6 +34,8 @@ interface DocumentData {
 const ITEMS_PER_PAGE = 8; // Exactly 2 rows of 4 cards on desktop
 
 export default function ExploreDocumentsPage() {
+  const { user, loading: authLoading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedFileType, setSelectedFileType] = useState('all');
@@ -128,33 +134,30 @@ export default function ExploreDocumentsPage() {
     
     return (
       <div className="w-full h-36 rounded-t-xl bg-gradient-to-br from-zinc-500/10 to-slate-500/10 border-b border-border flex flex-col items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-300">
-        <div className="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-zinc-500/20 border border-zinc-500/30 text-[9px] font-extrabold text-zinc-400 tracking-wider">
+        <div className="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-zinc-500/20 border border-zinc-500/30 text-[9px] font-extrabold text-muted tracking-wider">
           TXT
         </div>
-        <FileText className="h-10 w-10 text-zinc-400" />
+        <FileText className="h-10 w-10 text-muted" />
       </div>
     );
   };
 
-  return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
-      <PublicNavbar />
-
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-12 md:px-8 space-y-8">
-        
+  const renderMainContent = () => {
+    return (
+      <>
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-white">Explore Documents</h1>
-            <p className="text-xs text-zinc-500 mt-1">Discover, filter, and inspect document analysis indexes powered by AI.</p>
+            <h1 className={user ? "text-xl font-extrabold text-white tracking-tight" : "text-2xl md:text-3xl font-extrabold tracking-tight text-white"}>Explore Documents</h1>
+            <p className="text-xs text-muted mt-1">Discover, filter, and inspect document analysis indexes powered by AI.</p>
           </div>
           <button
             onClick={() => refetch()}
             disabled={isLoading || isRefetching}
-            className="h-10 px-4 rounded-xl border border-border bg-card-bg text-xs font-bold text-muted hover:text-white flex items-center gap-2 hover:bg-muted-bg disabled:opacity-50 transition-all cursor-pointer"
+            className={user ? "h-9 px-3.5 rounded-xl border border-border bg-background text-xs font-bold text-muted hover:text-white flex items-center gap-2 hover:bg-muted-bg disabled:opacity-50 transition-all cursor-pointer" : "h-10 px-4 rounded-xl border border-border bg-card-bg text-xs font-bold text-muted hover:text-white flex items-center gap-2 hover:bg-muted-bg disabled:opacity-50 transition-all cursor-pointer"}
           >
             <RefreshCw className={`h-3.5 w-3.5 ${isRefetching ? 'animate-spin' : ''}`} />
-            <span>Refresh Explorer</span>
+            <span>{user ? 'Refresh Library' : 'Refresh Explorer'}</span>
           </button>
         </div>
 
@@ -162,13 +165,13 @@ export default function ExploreDocumentsPage() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-card-bg border border-border p-4.5 rounded-2xl shadow-sm">
           {/* Title search */}
           <div className="md:col-span-5 relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
             <input
               type="text"
               placeholder="Search documents by title..."
               value={searchQuery}
               onChange={(e) => handleFilterChange(setSearchQuery, e.target.value)}
-              className="w-full h-10.5 bg-background border border-border hover:border-zinc-800 focus:border-indigo-500/80 rounded-xl pl-10 pr-4 text-xs text-white placeholder-zinc-655 transition-colors focus:outline-none"
+              className="w-full h-10.5 bg-background border border-border hover:border-border focus:border-indigo-500/80 rounded-xl pl-10 pr-4 text-xs text-white placeholder-zinc-655 transition-colors focus:outline-none"
             />
           </div>
 
@@ -177,7 +180,7 @@ export default function ExploreDocumentsPage() {
             <select
               value={selectedCategory}
               onChange={(e) => handleFilterChange(setSelectedCategory, e.target.value)}
-              className="w-full h-10.5 bg-background border border-border hover:border-zinc-800 rounded-xl px-4 text-xs font-bold text-zinc-400 focus:outline-none focus:border-indigo-500/80 transition-colors cursor-pointer capitalize"
+              className="w-full h-10.5 bg-background border border-border hover:border-border rounded-xl px-4 text-xs font-bold text-muted focus:outline-none focus:border-indigo-500/80 transition-colors cursor-pointer capitalize"
             >
               <option value="all" className="bg-[#09090b]">All Categories</option>
               {categories.filter((c) => c !== 'all').map((cat) => (
@@ -193,7 +196,7 @@ export default function ExploreDocumentsPage() {
             <select
               value={selectedFileType}
               onChange={(e) => handleFilterChange(setSelectedFileType, e.target.value)}
-              className="w-full h-10.5 bg-background border border-border hover:border-zinc-800 rounded-xl px-4 text-xs font-bold text-zinc-400 focus:outline-none focus:border-indigo-500/80 transition-colors cursor-pointer"
+              className="w-full h-10.5 bg-background border border-border hover:border-border rounded-xl px-4 text-xs font-bold text-muted focus:outline-none focus:border-indigo-500/80 transition-colors cursor-pointer"
             >
               <option value="all" className="bg-[#09090b]">All Formats</option>
               <option value="pdf" className="bg-[#09090b]">PDF Docs</option>
@@ -207,7 +210,7 @@ export default function ExploreDocumentsPage() {
             <select
               value={sortBy}
               onChange={(e) => handleFilterChange(setSortBy, e.target.value as any)}
-              className="w-full h-10.5 bg-background border border-border hover:border-zinc-800 rounded-xl px-4 text-xs font-bold text-zinc-400 focus:outline-none focus:border-indigo-500/80 transition-colors cursor-pointer"
+              className="w-full h-10.5 bg-background border border-border hover:border-border rounded-xl px-4 text-xs font-bold text-muted focus:outline-none focus:border-indigo-500/80 transition-colors cursor-pointer"
             >
               <option value="newest" className="bg-[#09090b]">Newest Added</option>
               <option value="oldest" className="bg-[#09090b]">Oldest Added</option>
@@ -236,18 +239,18 @@ export default function ExploreDocumentsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
               <div key={i} className="flex flex-col h-[415px] w-full rounded-xl border border-border bg-card-bg/60 animate-pulse overflow-hidden">
-                <div className="w-full h-36 bg-zinc-900/50 border-b border-border" />
+                <div className="w-full h-36 bg-muted-bg/50 border-b border-border" />
                 <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
                   <div className="space-y-3">
                     <div className="flex justify-between">
-                      <div className="h-4 w-16 bg-zinc-900 rounded-md" />
-                      <div className="h-4 w-12 bg-zinc-900 rounded-md" />
+                      <div className="h-4 w-16 bg-muted-bg rounded-md" />
+                      <div className="h-4 w-12 bg-muted-bg rounded-md" />
                     </div>
-                    <div className="h-5 w-3/4 bg-zinc-900 rounded-md" />
-                    <div className="h-4 w-full bg-zinc-900 rounded-md" />
-                    <div className="h-4 w-5/6 bg-zinc-900 rounded-md" />
+                    <div className="h-5 w-3/4 bg-muted-bg rounded-md" />
+                    <div className="h-4 w-full bg-muted-bg rounded-md" />
+                    <div className="h-4 w-5/6 bg-muted-bg rounded-md" />
                   </div>
-                  <div className="h-9.5 w-full bg-zinc-900 rounded-xl" />
+                  <div className="h-9.5 w-full bg-muted-bg rounded-xl" />
                 </div>
               </div>
             ))}
@@ -257,8 +260,8 @@ export default function ExploreDocumentsPage() {
           <div className="rounded-2xl border border-dashed border-border bg-card-bg/40 p-16 text-center max-w-md mx-auto space-y-4">
             <FolderOpen className="h-12 w-12 text-zinc-700 mx-auto" />
             <div className="space-y-1">
-              <h3 className="text-sm font-bold text-zinc-300">No public documents found</h3>
-              <p className="text-xs text-zinc-500 max-w-xs mx-auto leading-relaxed">
+              <h3 className="text-sm font-bold text-foreground">No public documents found</h3>
+              <p className="text-xs text-muted max-w-xs mx-auto leading-relaxed">
                 Try modifying your filters, search terms, or upload a new file.
               </p>
             </div>
@@ -270,7 +273,7 @@ export default function ExploreDocumentsPage() {
                   setSelectedFileType('all');
                   setSortBy('newest');
                 }}
-                className="h-9 px-4 rounded-xl border border-border text-xs font-semibold text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                className="h-9 px-4 rounded-xl border border-border text-xs font-semibold text-muted hover:text-white transition-colors cursor-pointer"
               >
                 Clear Filters
               </button>
@@ -334,7 +337,7 @@ export default function ExploreDocumentsPage() {
                           <span>{(doc.size / 1024).toFixed(1)} KB</span>
                         </div>
 
-                        <Link href={`/documents/${doc.id}`} className="block">
+                        <Link href={user ? `/dashboard/documents/${doc.id}` : `/documents/${doc.id}`} className="block">
                           <button className="w-full h-9.5 rounded-xl bg-accent text-white text-xs font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-1.5 cursor-pointer">
                             <span>View Details</span>
                             <ArrowRight className="h-3.5 w-3.5" />
@@ -350,7 +353,7 @@ export default function ExploreDocumentsPage() {
             {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="flex items-center justify-between border-t border-border pt-4">
-                <span className="text-[11px] text-zinc-550 font-bold">
+                <span className="text-[11px] text-muted font-bold">
                   Page {currentPage} of {totalPages} ({filteredDocuments.length} files)
                 </span>
 
@@ -358,7 +361,7 @@ export default function ExploreDocumentsPage() {
                   <button
                     onClick={() => setCurrentPage((c) => Math.max(c - 1, 1))}
                     disabled={currentPage === 1}
-                    className="p-2 rounded-xl border border-border bg-card-bg text-zinc-400 hover:text-white disabled:opacity-30 transition-all cursor-pointer"
+                    className="p-2 rounded-xl border border-border bg-card-bg text-muted hover:text-white disabled:opacity-30 transition-all cursor-pointer"
                     aria-label="Previous Page"
                   >
                     <ChevronLeft className="h-4 w-4" />
@@ -373,7 +376,7 @@ export default function ExploreDocumentsPage() {
                         className={`h-8.5 w-8.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                           currentPage === pageNum
                             ? 'bg-accent text-white shadow-md'
-                            : 'border border-border bg-card-bg text-zinc-400 hover:text-white'
+                            : 'border border-border bg-card-bg text-muted hover:text-white'
                         }`}
                       >
                         {pageNum}
@@ -384,7 +387,7 @@ export default function ExploreDocumentsPage() {
                   <button
                     onClick={() => setCurrentPage((c) => Math.min(c + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                    className="p-2 rounded-xl border border-border bg-card-bg text-zinc-400 hover:text-white disabled:opacity-30 transition-all cursor-pointer"
+                    className="p-2 rounded-xl border border-border bg-card-bg text-muted hover:text-white disabled:opacity-30 transition-all cursor-pointer"
                     aria-label="Next Page"
                   >
                     <ChevronRight className="h-4 w-4" />
@@ -394,6 +397,45 @@ export default function ExploreDocumentsPage() {
             )}
           </div>
         )}
+      </>
+    );
+  };
+
+  if (authLoading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-background text-muted">
+        <div className="flex flex-col items-center gap-3">
+          <Spinner size="lg" />
+          <p className="text-xs font-semibold tracking-wider uppercase text-muted">Initializing session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return (
+      <div className="flex h-screen w-screen overflow-hidden bg-background">
+        {/* Navigation Sidebar */}
+        <Sidebar className="shrink-0" isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+
+        {/* Main Workspace Frame */}
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <Navbar onMenuClick={() => setSidebarOpen(true)} />
+          {/* Scrollable Context Area */}
+          <main className="flex-1 overflow-y-auto bg-background/20 p-8 space-y-6">
+            {renderMainContent()}
+          </main>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col min-h-screen bg-background text-foreground transition-colors duration-300">
+      <PublicNavbar />
+
+      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-12 md:px-8 space-y-8">
+        {renderMainContent()}
       </main>
 
       <PublicFooter />

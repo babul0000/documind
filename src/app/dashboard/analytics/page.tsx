@@ -26,13 +26,13 @@ export default function AnalyticsPage() {
         <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
           <BarChart3 className="h-5.5 w-5.5 text-indigo-400" /> Usage & Volume Analytics
         </h2>
-        <p className="text-xs text-zinc-500 mt-1">Real-time statistics covering storage volumes, file types, and AI completion indicators.</p>
+        <p className="text-xs text-muted mt-1">Real-time statistics covering storage volumes, file types, and AI completion indicators.</p>
       </div>
 
       {isLoading ? (
-        <div className="rounded-2xl border border-zinc-900 bg-zinc-950/20 p-24 text-center flex flex-col items-center justify-center gap-3">
+        <div className="rounded-2xl border border-border bg-background/20 p-24 text-center flex flex-col items-center justify-center gap-3">
           <Loader2 className="h-6 w-6 text-zinc-700 animate-spin" />
-          <span className="text-xs text-zinc-500 font-semibold">Analyzing database statistics...</span>
+          <span className="text-xs text-muted font-semibold">Analyzing database statistics...</span>
         </div>
       ) : error ? (
         <div className="rounded-2xl border border-rose-500/20 bg-rose-500/5 p-8 text-center text-rose-400">
@@ -41,7 +41,7 @@ export default function AnalyticsPage() {
       ) : analyticsData ? (
         <AnalyticsCharts data={analyticsData} />
       ) : (
-        <div className="rounded-2xl border border-zinc-900 p-12 text-center text-zinc-500">
+        <div className="rounded-2xl border border-border p-12 text-center text-muted">
           No analytics data available.
         </div>
       )}

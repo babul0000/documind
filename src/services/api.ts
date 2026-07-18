@@ -89,6 +89,9 @@ export const api = {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', `${BASE_URL}${endpoint}`);
       
+      // Allow sending session cookies (HttpOnly) cross-origin
+      xhr.withCredentials = true;
+      
       const token = getCookie("better-auth.session_token");
       if (token) {
         xhr.setRequestHeader('Authorization', `Bearer ${token}`);

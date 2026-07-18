@@ -29,6 +29,7 @@ const ITEMS_PER_PAGE = 8;
 
 export default function ManageDocumentsPage() {
   const { user, loading: authLoading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -86,10 +87,10 @@ export default function ManageDocumentsPage() {
 
   if (authLoading) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#050505] text-zinc-400">
+      <div className="flex h-screen w-screen items-center justify-center bg-background text-muted">
         <div className="flex flex-col items-center gap-3">
           <Spinner size="lg" />
-          <p className="text-xs font-semibold tracking-wider uppercase text-zinc-500">Initializing session...</p>
+          <p className="text-xs font-semibold tracking-wider uppercase text-muted">Initializing session...</p>
         </div>
       </div>
     );
@@ -100,25 +101,25 @@ export default function ManageDocumentsPage() {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#050505]">
+    <div className="flex h-screen w-screen overflow-hidden bg-background">
       {/* Sidebar Navigation */}
-      <Sidebar className="shrink-0" />
+      <Sidebar className="shrink-0" isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Workspace Frame */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <Navbar />
+        <Navbar onMenuClick={() => setSidebarOpen(true)} />
 
         {/* Scrollable Table Area */}
-        <main className="flex-1 overflow-y-auto bg-zinc-950/20 p-8 space-y-6">
+        <main className="flex-1 overflow-y-auto bg-background/20 p-8 space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-xl font-extrabold text-white tracking-tight">Manage Documents</h1>
-              <p className="text-xs text-zinc-500 mt-0.5">Edit, index, or delete your parsing document records.</p>
+              <p className="text-xs text-muted mt-0.5">Edit, index, or delete your parsing document records.</p>
             </div>
             <button
               onClick={() => refetch()}
               disabled={isLoading || isRefetching}
-              className="h-9 px-3.5 rounded-xl border border-zinc-900 bg-zinc-950 text-xs font-bold text-zinc-400 hover:text-white flex items-center gap-2 hover:bg-zinc-900 disabled:opacity-50 transition-all cursor-pointer"
+              className="h-9 px-3.5 rounded-xl border border-border bg-background text-xs font-bold text-muted hover:text-white flex items-center gap-2 hover:bg-muted-bg disabled:opacity-50 transition-all cursor-pointer"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${isRefetching ? 'animate-spin' : ''}`} />
               <span>Refresh Library</span>
@@ -128,18 +129,18 @@ export default function ManageDocumentsPage() {
           {/* Delete confirmation modal */}
           {deleteConfirmId && (
             <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="bg-zinc-950 border border-zinc-900 p-6 rounded-2xl max-w-sm w-full space-y-4 shadow-xl">
+              <div className="bg-background border border-border p-6 rounded-2xl max-w-sm w-full space-y-4 shadow-xl">
                 <div className="flex items-center gap-3 text-amber-500">
                   <AlertTriangle className="h-6 w-6 shrink-0" />
                   <h3 className="text-sm font-extrabold text-white">Purge Confirmation</h3>
                 </div>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-muted leading-relaxed">
                   Are you sure you want to permanently delete this document and all associated AI reports and conversations? This action cannot be undone.
                 </p>
                 <div className="flex justify-end gap-3 pt-2">
                   <button
                     onClick={() => setDeleteConfirmId(null)}
-                    className="h-9 px-4 rounded-xl border border-zinc-800 text-xs font-bold text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                    className="h-9 px-4 rounded-xl border border-border text-xs font-bold text-muted hover:text-white transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
@@ -164,15 +165,15 @@ export default function ManageDocumentsPage() {
           )}
 
           {/* Actions & Filters */}
-          <div className="flex items-center bg-zinc-950/40 border border-zinc-900 p-4 rounded-2xl">
+          <div className="flex items-center bg-background/40 border border-border p-4 rounded-2xl">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
               <input
                 type="text"
                 placeholder="Search documents by title..."
                 value={searchQuery}
                 onChange={handleSearchChange}
-                className="w-full h-10.5 bg-zinc-950 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500/80 rounded-xl pl-10 pr-4 text-xs text-white placeholder-zinc-600 transition-colors focus:outline-none"
+                className="w-full h-10.5 bg-background border border-border hover:border-border focus:border-indigo-500/80 rounded-xl pl-10 pr-4 text-xs text-white placeholder-zinc-600 transition-colors focus:outline-none"
               />
             </div>
           </div>
@@ -194,15 +195,15 @@ export default function ManageDocumentsPage() {
             /* Skeleton Table list */
             <div className="space-y-4">
               {Array.from({ length: 5 }).map((_, i) => (
-                <div key={i} className="h-16 bg-zinc-950/40 border border-zinc-900 rounded-xl animate-pulse" />
+                <div key={i} className="h-16 bg-background/40 border border-border rounded-xl animate-pulse" />
               ))}
             </div>
           ) : filteredDocuments.length === 0 ? (
             /* Empty State */
-            <div className="rounded-2xl border border-dashed border-zinc-900 bg-zinc-950/10 p-16 text-center max-w-md mx-auto">
+            <div className="rounded-2xl border border-dashed border-border bg-background/10 p-16 text-center max-w-md mx-auto">
               <FolderOpen className="h-12 w-12 text-zinc-700 mx-auto mb-4" />
-              <h3 className="text-sm font-bold text-zinc-300">No documents found</h3>
-              <p className="text-xs text-zinc-500 mt-1.5 max-w-xs mx-auto">
+              <h3 className="text-sm font-bold text-foreground">No documents found</h3>
+              <p className="text-xs text-muted mt-1.5 max-w-xs mx-auto">
                 {searchQuery ? 'No documents match your query string.' : 'You have not uploaded any documents yet.'}
               </p>
               {!searchQuery && (
@@ -218,10 +219,10 @@ export default function ManageDocumentsPage() {
             <div className="space-y-6">
               
               {/* Desktop Table View */}
-              <div className="hidden md:block rounded-2xl border border-zinc-900 bg-zinc-955 overflow-hidden">
+              <div className="hidden md:block rounded-2xl border border-border bg-card-bg overflow-hidden">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-zinc-950 border-b border-zinc-900 text-zinc-400 font-bold uppercase tracking-wider text-[10px]">
+                    <tr className="bg-background border-b border-border text-muted font-bold uppercase tracking-wider text-[10px]">
                       <th className="p-4">Cover / File</th>
                       <th className="p-4">Document Title</th>
                       <th className="p-4">Category</th>
@@ -230,7 +231,7 @@ export default function ManageDocumentsPage() {
                       <th className="p-4 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-900 text-zinc-300">
+                  <tbody className="divide-y divide-zinc-900 text-foreground">
                     {paginatedDocuments.map((doc) => {
                       const uploadDate = new Date(doc.createdAt).toLocaleDateString('en-US', {
                         month: 'short',
@@ -239,20 +240,20 @@ export default function ManageDocumentsPage() {
                       });
                       
                       return (
-                        <tr key={doc.id} className="hover:bg-zinc-900/10 transition-colors">
+                        <tr key={doc.id} className="hover:bg-muted-bg/10 transition-colors">
                           <td className="p-4">
                             {doc.imageUrl ? (
                               <img 
                                 src={doc.imageUrl} 
                                 alt={doc.title} 
-                                className="h-10 w-10 rounded-lg object-cover border border-zinc-800" 
+                                className="h-10 w-10 rounded-lg object-cover border border-border" 
                                 onError={(e) => {
                                   // Fallback to text icon on load failure
                                   (e.target as HTMLElement).style.display = 'none';
                                 }}
                               />
                             ) : (
-                              <div className="h-10 w-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
+                              <div className="h-10 w-10 rounded-lg bg-muted-bg border border-border flex items-center justify-center text-muted">
                                 <FileText className="h-5 w-5" />
                               </div>
                             )}
@@ -261,17 +262,17 @@ export default function ManageDocumentsPage() {
                             <div className="space-y-0.5 max-w-xs">
                               <span className="block truncate">{doc.title}</span>
                               {doc.shortDescription && (
-                                <span className="block text-[10px] text-zinc-500 font-medium truncate">{doc.shortDescription}</span>
+                                <span className="block text-[10px] text-muted font-medium truncate">{doc.shortDescription}</span>
                               )}
                             </div>
                           </td>
                           <td className="p-4 capitalize font-semibold">{doc.category}</td>
-                          <td className="p-4 text-zinc-500 font-medium">{(doc.size / 1024).toFixed(1)} KB</td>
-                          <td className="p-4 text-zinc-500 font-medium">{uploadDate}</td>
+                          <td className="p-4 text-muted font-medium">{(doc.size / 1024).toFixed(1)} KB</td>
+                          <td className="p-4 text-muted font-medium">{uploadDate}</td>
                           <td className="p-4 text-right">
                             <div className="flex items-center justify-end gap-2">
-                              <Link href={`/documents/${doc.id}`}>
-                                <button className="h-8 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-850 flex items-center gap-1.5 transition-all text-[11px] font-bold cursor-pointer">
+                              <Link href={`/dashboard/documents/${doc.id}`}>
+                                <button className="h-8 px-3 rounded-lg bg-muted-bg hover:bg-zinc-800 text-foreground hover:text-white border border-border flex items-center gap-1.5 transition-all text-[11px] font-bold cursor-pointer">
                                   <Eye className="h-3.5 w-3.5" />
                                   <span>View</span>
                                 </button>
@@ -301,9 +302,9 @@ export default function ManageDocumentsPage() {
                     year: 'numeric',
                   });
                   return (
-                    <div key={doc.id} className="bg-zinc-955 border border-zinc-900 rounded-xl p-4 space-y-4">
+                    <div key={doc.id} className="bg-card-bg border border-border rounded-xl p-4 space-y-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400 shrink-0">
+                        <div className="h-10 w-10 rounded-lg bg-muted-bg border border-border flex items-center justify-center text-muted shrink-0">
                           {doc.imageUrl ? (
                             <img src={doc.imageUrl} alt={doc.title} className="h-10 w-10 rounded-lg object-cover" />
                           ) : (
@@ -312,15 +313,15 @@ export default function ManageDocumentsPage() {
                         </div>
                         <div className="min-w-0">
                           <h4 className="text-xs font-bold text-white truncate">{doc.title}</h4>
-                          <p className="text-[10px] text-zinc-500 font-medium truncate capitalize">{doc.category} • {uploadDate}</p>
+                          <p className="text-[10px] text-muted font-medium truncate capitalize">{doc.category} • {uploadDate}</p>
                         </div>
                       </div>
                       {doc.shortDescription && (
-                        <p className="text-[11px] text-zinc-400 leading-relaxed line-clamp-2">{doc.shortDescription}</p>
+                        <p className="text-[11px] text-muted leading-relaxed line-clamp-2">{doc.shortDescription}</p>
                       )}
-                      <div className="flex justify-end gap-2 border-t border-zinc-900 pt-3">
-                        <Link href={`/documents/${doc.id}`}>
-                          <button className="h-8 px-3 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 hover:text-white border border-zinc-850 flex items-center gap-1.5 transition-all text-[10px] font-bold cursor-pointer">
+                      <div className="flex justify-end gap-2 border-t border-border pt-3">
+                        <Link href={`/dashboard/documents/${doc.id}`}>
+                          <button className="h-8 px-3 rounded-lg bg-muted-bg hover:bg-zinc-800 text-foreground hover:text-white border border-border flex items-center gap-1.5 transition-all text-[10px] font-bold cursor-pointer">
                             <Eye className="h-3.5 w-3.5" />
                             <span>View</span>
                           </button>
@@ -340,8 +341,8 @@ export default function ManageDocumentsPage() {
 
               {/* Pagination bar */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between border-t border-zinc-900 pt-4">
-                  <span className="text-[11px] text-zinc-500 font-bold">
+                <div className="flex items-center justify-between border-t border-border pt-4">
+                  <span className="text-[11px] text-muted font-bold">
                     Page {currentPage} of {totalPages} ({filteredDocuments.length} files)
                   </span>
 
@@ -349,7 +350,7 @@ export default function ManageDocumentsPage() {
                     <button
                       onClick={() => setCurrentPage((c) => Math.max(c - 1, 1))}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-xl border border-zinc-900 bg-zinc-950 text-zinc-400 hover:text-white disabled:opacity-30 transition-all cursor-pointer"
+                      className="p-2 rounded-xl border border-border bg-background text-muted hover:text-white disabled:opacity-30 transition-all cursor-pointer"
                       aria-label="Previous Page"
                     >
                       <ChevronLeft className="h-4 w-4" />
@@ -364,7 +365,7 @@ export default function ManageDocumentsPage() {
                           className={`h-8.5 w-8.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                             currentPage === pageNum
                               ? 'bg-accent text-white shadow-md'
-                              : 'border border-zinc-900 bg-zinc-950 text-zinc-400 hover:text-white'
+                              : 'border border-border bg-background text-muted hover:text-white'
                           }`}
                         >
                           {pageNum}
@@ -375,7 +376,7 @@ export default function ManageDocumentsPage() {
                     <button
                       onClick={() => setCurrentPage((c) => Math.min(c + 1, totalPages))}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-xl border border-zinc-900 bg-zinc-950 text-zinc-400 hover:text-white disabled:opacity-30 transition-all cursor-pointer"
+                      className="p-2 rounded-xl border border-border bg-background text-muted hover:text-white disabled:opacity-30 transition-all cursor-pointer"
                       aria-label="Next Page"
                     >
                       <ChevronRight className="h-4 w-4" />

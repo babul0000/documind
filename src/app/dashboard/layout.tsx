@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '../../hooks/use-auth';
 import { Sidebar } from '../../components/dashboard/sidebar';
 import { Navbar } from '../../components/dashboard/navbar';
@@ -12,13 +12,14 @@ import { Spinner } from '../../components/ui/spinner';
  */
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (loading) {
     return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#050505] text-zinc-400">
+      <div className="flex h-screen w-screen items-center justify-center bg-background text-muted">
         <div className="flex flex-col items-center gap-3">
           <Spinner size="lg" />
-          <p className="text-xs font-semibold tracking-wider uppercase text-zinc-500">Initializing session...</p>
+          <p className="text-xs font-semibold tracking-wider uppercase text-muted">Initializing session...</p>
         </div>
       </div>
     );
@@ -29,15 +30,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#050505]">
+    <div className="flex h-screen w-screen overflow-hidden bg-background">
       {/* Navigation Sidebar */}
-      <Sidebar className="shrink-0" />
+      <Sidebar className="shrink-0" isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Workspace Frame */}
       <div className="flex flex-1 flex-col overflow-hidden">
-        <Navbar />
+        <Navbar onMenuClick={() => setSidebarOpen(true)} />
         {/* Scrollable Context Area */}
-        <main className="flex-1 overflow-y-auto bg-zinc-950/20 p-8">
+        <main className="flex-1 overflow-y-auto bg-background/20 p-8">
           {children}
         </main>
       </div>

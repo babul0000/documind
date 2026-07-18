@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { 
@@ -61,9 +61,17 @@ interface ChatMessage {
 
 export default function PublicDocumentDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const id = params.id as string;
   const queryClient = useQueryClient();
   const { user } = useAuth();
+
+  // Redirect to private workspace if logged in
+  useEffect(() => {
+    if (user) {
+      router.push(`/dashboard/documents/${id}`);
+    }
+  }, [user, id, router]);
 
   // Mobile layout collapsible chat state
   const [isMobileChatOpen, setIsMobileChatOpen] = useState(false);
@@ -355,7 +363,7 @@ export default function PublicDocumentDetailsPage() {
                   <div className={`h-20 w-20 rounded-xl shrink-0 border flex flex-col items-center justify-center font-bold text-xs ${
                     fileLabel === 'PDF' ? 'bg-rose-500/5 text-rose-500 border-rose-500/20' : 
                     fileLabel === 'DOCX' ? 'bg-blue-500/5 text-blue-500 border-blue-500/20' : 
-                    'bg-zinc-500/5 text-zinc-400 border-zinc-500/20'
+                    'bg-zinc-500/5 text-muted border-zinc-500/20'
                   }`}>
                     <FileText className="h-8 w-8 mb-1" />
                     <span>{fileLabel}</span>
@@ -378,7 +386,7 @@ export default function PublicDocumentDetailsPage() {
                     <h2 className="text-xl font-extrabold text-white truncate leading-tight" title={docData.title}>
                       {docData.title}
                     </h2>
-                    <p className="text-xs text-zinc-500 truncate">
+                    <p className="text-xs text-muted truncate">
                       Original name: {docData.originalName} | Size: {(docData.size / 1024).toFixed(1)} KB
                     </p>
                   </div>
@@ -387,7 +395,7 @@ export default function PublicDocumentDetailsPage() {
 
               {/* AI Knowledge Insights Dashboard Section */}
               <section className="rounded-2xl border border-border bg-card-bg p-6 space-y-4 shadow-sm">
-                <h3 className="text-xs font-extrabold text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+                <h3 className="text-xs font-extrabold text-muted uppercase tracking-widest flex items-center gap-2">
                   <BarChart3 className="h-4.5 w-4.5 text-indigo-400" />
                   <span>AI Knowledge Insights</span>
                 </h3>
@@ -395,11 +403,11 @@ export default function PublicDocumentDetailsPage() {
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                   {/* Confidence progress */}
                   <div className="bg-[#09090b] border border-border p-4 rounded-xl space-y-2">
-                    <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold">AI Confidence</span>
+                    <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold">AI Confidence</span>
                     <div className="flex items-center justify-between text-xs font-bold text-emerald-400">
                       <span>{docData.keyInfo?.confidenceScore || 92}%</span>
                     </div>
-                    <div className="w-full bg-zinc-900 rounded-full h-1.5 overflow-hidden">
+                    <div className="w-full bg-muted-bg rounded-full h-1.5 overflow-hidden">
                       <div 
                         className="bg-emerald-500 h-1.5 rounded-full" 
                         style={{ width: `${docData.keyInfo?.confidenceScore || 92}%` }}
@@ -409,7 +417,7 @@ export default function PublicDocumentDetailsPage() {
 
                   {/* Complexity */}
                   <div className="bg-[#09090b] border border-border p-4 rounded-xl space-y-1">
-                    <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold">Complexity Level</span>
+                    <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold">Complexity Level</span>
                     <span className={`text-xs font-bold block ${
                       complexityLevel === 'High' ? 'text-rose-400' : 
                       complexityLevel === 'Medium' ? 'text-indigo-400' : 'text-emerald-400'
@@ -418,26 +426,26 @@ export default function PublicDocumentDetailsPage() {
 
                   {/* Reading Time */}
                   <div className="bg-[#09090b] border border-border p-4 rounded-xl space-y-1">
-                    <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold">Reading Time</span>
+                    <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold">Reading Time</span>
                     <span className="text-xs font-bold text-white block flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5 text-zinc-500" />
+                      <Clock className="h-3.5 w-3.5 text-muted" />
                       <span>{readingTime}</span>
                     </span>
                   </div>
 
                   {/* Category */}
                   <div className="bg-[#09090b] border border-border p-4 rounded-xl space-y-1">
-                    <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold">Category Index</span>
+                    <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold">Category Index</span>
                     <span className="text-xs font-bold text-white capitalize block truncate">{docData.category}</span>
                   </div>
                 </div>
 
                 {/* Concepts badges list */}
-                <div className="space-y-2 pt-2 border-t border-zinc-900/50">
-                  <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold">Extracted concepts & Topics</span>
+                <div className="space-y-2 pt-2 border-t border-border/50">
+                  <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold">Extracted concepts & Topics</span>
                   <div className="flex flex-wrap gap-1.5">
                     {docData.tags.map((tag, idx) => (
-                      <span key={idx} className="text-[9px] font-bold text-zinc-300 bg-zinc-900 border border-zinc-800 px-2.5 py-0.5 rounded-lg capitalize">
+                      <span key={idx} className="text-[9px] font-bold text-foreground bg-muted-bg border border-border px-2.5 py-0.5 rounded-lg capitalize">
                         {tag}
                       </span>
                     ))}
@@ -451,7 +459,7 @@ export default function PublicDocumentDetailsPage() {
                   <Info className="h-4.5 w-4.5 text-indigo-400" />
                   <span>Overview</span>
                 </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed">
+                <p className="text-xs text-muted leading-relaxed">
                   {docData.description || 'No custom description provided for this knowledge block.'}
                 </p>
               </section>
@@ -462,7 +470,7 @@ export default function PublicDocumentDetailsPage() {
                   <FileText className="h-4.5 w-4.5 text-indigo-400" />
                   <span>Full Description</span>
                 </h3>
-                <p className="text-xs text-zinc-400 leading-relaxed font-normal">
+                <p className="text-xs text-muted leading-relaxed font-normal">
                   {docData.description 
                     ? `This file contains the complete records for "${docData.title}". Classification filters mapped it to the "${docData.category}" repository directory. Below are the AI parsed summarization nodes extracted from the textual structure.`
                     : 'No detailed full description provided for this catalog index.'}
@@ -475,7 +483,7 @@ export default function PublicDocumentDetailsPage() {
                   <Shield className="h-4.5 w-4.5 text-purple-400" />
                   <span>AI Understanding</span>
                 </h3>
-                <div className="p-4.5 rounded-xl border border-border bg-background/60 text-xs text-zinc-400 leading-relaxed whitespace-pre-line">
+                <div className="p-4.5 rounded-xl border border-border bg-background/60 text-xs text-muted leading-relaxed whitespace-pre-line">
                   {docData.summary || 'AI analysis summary has not been processed for this index.'}
                 </div>
               </section>
@@ -489,7 +497,7 @@ export default function PublicDocumentDetailsPage() {
                   </h3>
                   <ul className="space-y-2">
                     {docData.keyInfo.keyPoints.map((point, idx) => (
-                      <li key={idx} className="text-xs text-zinc-400 flex items-start gap-2.5 leading-relaxed">
+                      <li key={idx} className="text-xs text-muted flex items-start gap-2.5 leading-relaxed">
                         <span className="h-1.5 w-1.5 rounded-full bg-indigo-500 shrink-0 mt-2" />
                         <span>{point}</span>
                       </li>
@@ -560,7 +568,7 @@ export default function PublicDocumentDetailsPage() {
                     {docData.keyInfo.actionItems.map((item, idx) => (
                       <div key={idx} className="flex items-start gap-2.5 bg-[#09090b] border border-border/60 p-3 rounded-xl">
                         <input type="checkbox" className="mt-1 shrink-0 accent-rose-500 h-3.5 w-3.5 cursor-pointer rounded" />
-                        <span className="text-xs text-zinc-400 font-medium">{item}</span>
+                        <span className="text-xs text-muted font-medium">{item}</span>
                       </div>
                     ))}
                   </div>
@@ -604,7 +612,7 @@ export default function PublicDocumentDetailsPage() {
                         <button 
                           type="button" 
                           onClick={() => setIsEditingTags(false)} 
-                          className="h-8 px-4 rounded-lg bg-zinc-900 border border-border text-xs text-muted hover:text-white cursor-pointer"
+                          className="h-8 px-4 rounded-lg bg-muted-bg border border-border text-xs text-muted hover:text-white cursor-pointer"
                           disabled={isUpdatingTags}
                         >
                           Cancel
@@ -674,25 +682,25 @@ export default function PublicDocumentDetailsPage() {
                   <span>Knowledge Connections</span>
                 </h3>
 
-                <div className="p-5 bg-zinc-950 border border-zinc-900 rounded-xl space-y-4">
+                <div className="p-5 bg-background border border-border rounded-xl space-y-4">
                   {/* Visual flowchart connections */}
                   <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-center">
                     <div className="bg-[#09090b] border border-border p-3.5 rounded-xl w-full sm:w-1/3">
-                      <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold mb-1">Current document</span>
+                      <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold mb-1">Current document</span>
                       <span className="text-xs font-bold text-white truncate block max-w-[130px] mx-auto">{docData.title}</span>
                     </div>
                     <div className="text-zinc-700 font-bold rotate-90 sm:rotate-0">$\rightarrow$</div>
                     <div className="bg-[#09090b] border border-border p-3.5 rounded-xl w-full sm:w-1/3">
-                      <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold mb-1">Related Concept</span>
+                      <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold mb-1">Related Concept</span>
                       <span className="text-xs font-bold text-indigo-400 capitalize">{docData.category} Classification</span>
                     </div>
                     <div className="text-zinc-700 font-bold rotate-90 sm:rotate-0">$\rightarrow$</div>
                     <div className="bg-[#09090b] border border-border p-3.5 rounded-xl w-full sm:w-1/3">
-                      <span className="block text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold mb-1">Related Documents</span>
+                      <span className="block text-[8px] uppercase tracking-wider text-muted font-extrabold mb-1">Related Documents</span>
                       <span className="text-xs font-bold text-white">{relatedDocs.length} Connected Files</span>
                     </div>
                   </div>
-                  <p className="text-[10px] text-zinc-500 leading-relaxed text-center italic">
+                  <p className="text-[10px] text-muted leading-relaxed text-center italic">
                     AI mapped this network based on overlap in the "{docData.category}" classification category.
                   </p>
                 </div>
@@ -706,7 +714,7 @@ export default function PublicDocumentDetailsPage() {
                           {doc.category}
                         </span>
                         <h4 className="text-xs font-bold text-white line-clamp-1 truncate">{doc.title}</h4>
-                        <p className="text-[10px] text-zinc-400 line-clamp-2 leading-relaxed">{doc.description || 'No description.'}</p>
+                        <p className="text-[10px] text-muted line-clamp-2 leading-relaxed">{doc.description || 'No description.'}</p>
                       </div>
                       <Link href={`/documents/${doc.id}`} className="text-[10px] font-bold text-indigo-400 hover:underline flex items-center gap-1.5 mt-2">
                         <span>View Analysis</span>
@@ -740,7 +748,7 @@ export default function PublicDocumentDetailsPage() {
                   {/* Recommended Next Step */}
                   <div className="bg-card-bg border border-border p-4.5 rounded-xl space-y-2">
                     <span className="block text-[9px] font-extrabold uppercase tracking-widest text-amber-400">Recommended Next Step</span>
-                    <p className="text-[10px] text-zinc-400 leading-relaxed">
+                    <p className="text-[10px] text-muted leading-relaxed">
                       {relatedDocs[0] 
                         ? `Open and review "${relatedDocs[0].title}" to build out context mapping.`
                         : `Upload additional documents under the category "${docData.category}" to generate followups.`}
@@ -836,7 +844,7 @@ export default function PublicDocumentDetailsPage() {
                               ))}
                             </div>
                           </div>
-                          <p className="text-xs text-zinc-400 leading-relaxed">
+                          <p className="text-xs text-muted leading-relaxed">
                             {rev.comment}
                           </p>
                         </div>
@@ -871,7 +879,7 @@ export default function PublicDocumentDetailsPage() {
                   <span className="lg:hidden text-[9px] font-extrabold uppercase text-indigo-400">
                     {isMobileChatOpen ? 'Collapse Chat' : 'Expand Chat'}
                   </span>
-                  <div className="lg:hidden text-zinc-550">
+                  <div className="lg:hidden text-muted">
                     {isMobileChatOpen ? <ChevronDown className="h-4.5 w-4.5" /> : <ChevronUp className="h-4.5 w-4.5" />}
                   </div>
                   <div className="hidden lg:block h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -882,13 +890,13 @@ export default function PublicDocumentDetailsPage() {
               <div className={`flex flex-col h-[calc(100%-56px)] ${!isMobileChatOpen ? 'hidden lg:flex' : 'flex'}`}>
                 
                 {/* 1. Chat Log window */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-zinc-950/20 text-xs">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-background/20 text-xs">
                   {chatHistory.length === 0 ? (
                     <div className="h-full flex flex-col items-center justify-center text-center text-muted space-y-3.5 py-12">
                       <HelpCircle className="h-10 w-10 text-indigo-500/30 animate-bounce" />
                       <div className="space-y-1">
                         <h4 className="font-bold text-white text-xs">Grounded RAG Dialogue</h4>
-                        <p className="text-[10px] text-zinc-500 max-w-[200px] mx-auto leading-relaxed">
+                        <p className="text-[10px] text-muted max-w-[200px] mx-auto leading-relaxed">
                           Ask anything about this document. Custom suggestions are generated below.
                         </p>
                       </div>
@@ -899,11 +907,11 @@ export default function PublicDocumentDetailsPage() {
                         <div className={`inline-block max-w-[85%] rounded-xl p-3.5 text-[11px] leading-relaxed text-left ${
                           msg.sender === 'user' 
                             ? 'bg-indigo-600 text-white rounded-br-none' 
-                            : 'bg-muted-bg border border-border text-zinc-300 rounded-bl-none'
+                            : 'bg-muted-bg border border-border text-foreground rounded-bl-none'
                         }`}>
                           <p className="whitespace-pre-line">{msg.text}</p>
                         </div>
-                        <div className="flex items-center gap-2 justify-end px-1 pt-0.5 text-[8px] text-zinc-650 font-bold uppercase tracking-wider">
+                        <div className="flex items-center gap-2 justify-end px-1 pt-0.5 text-[8px] text-muted font-bold uppercase tracking-wider">
                           <span>{msg.timestamp}</span>
                           {msg.sender === 'ai' && msg.text.length > 0 && (
                             <button 
@@ -920,9 +928,9 @@ export default function PublicDocumentDetailsPage() {
                   )}
 
                   {isSendingChat && (
-                    <div className="flex max-w-[85%] mr-auto rounded-xl p-3.5 bg-muted-bg border border-border text-zinc-400 rounded-bl-none items-center gap-2">
+                    <div className="flex max-w-[85%] mr-auto rounded-xl p-3.5 bg-muted-bg border border-border text-muted rounded-bl-none items-center gap-2">
                       <Spinner size="sm" />
-                      <span className="text-[10px] font-semibold animate-pulse text-zinc-500">Retrieving contextual weights...</span>
+                      <span className="text-[10px] font-semibold animate-pulse text-muted">Retrieving contextual weights...</span>
                     </div>
                   )}
                 </div>
@@ -948,7 +956,7 @@ export default function PublicDocumentDetailsPage() {
                         key={idx}
                         onClick={() => handleSendMessage(q)}
                         disabled={isSendingChat}
-                        className="w-full text-left p-2.5 rounded-xl border border-border bg-card-bg text-[10px] text-zinc-400 hover:text-white hover:bg-muted-bg transition-all cursor-pointer font-semibold leading-tight truncate"
+                        className="w-full text-left p-2.5 rounded-xl border border-border bg-card-bg text-[10px] text-muted hover:text-white hover:bg-muted-bg transition-all cursor-pointer font-semibold leading-tight truncate"
                       >
                         {q}
                       </button>

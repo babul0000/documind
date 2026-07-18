@@ -9,13 +9,15 @@ import { cn } from '../../utils/cn';
 
 interface SidebarProps {
   className?: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 /**
  * Main dashboard navigation sidebar.
  * Includes app brand, page routers, and user profiles with signout links.
  */
-export function Sidebar({ className }: SidebarProps) {
+export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
 
@@ -58,41 +60,52 @@ export function Sidebar({ className }: SidebarProps) {
   ];
 
   return (
-    <aside className={cn(
-      'flex h-screen w-64 flex-col border-r border-zinc-900 bg-zinc-955 px-4 py-6 text-zinc-300',
-      className
-    )}>
+    <>
+      {/* Backdrop overlay for mobile */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          onClick={onClose}
+        />
+      )}
+
+      <aside className={cn(
+        'fixed inset-y-0 left-0 z-50 flex h-screen w-64 flex-col border-r border-border bg-card-bg px-4 py-6 text-foreground transition-transform duration-300 ease-in-out lg:static lg:translate-x-0',
+        isOpen ? 'translate-x-0' : '-translate-x-full',
+        className
+      )}>
       {/* Brand Logo */}
       <Link href="/" className="flex items-center gap-3 px-2 mb-8">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-md">
           <BrainCircuit className="h-5.5 w-5.5 text-white" />
         </div>
         <div className="flex flex-col">
-          <span className="font-bold text-white text-base tracking-wide leading-tight">DocuMind AI</span>
-          <span className="text-[10px] text-zinc-500 font-semibold tracking-widest uppercase">Assistant</span>
+          <span className="font-bold text-foreground text-base tracking-wide leading-tight">DocuMind AI</span>
+          <span className="text-[10px] text-muted font-semibold tracking-widest uppercase">Assistant</span>
         </div>
       </Link>
 
       {/* Main Navigation Links */}
       <nav className="flex-1 space-y-1">
         {menuItems.map((item) => {
-          const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+          const isActive = pathname === item.href || (item.href !== '/dashboard' && item.href !== '/documents' && pathname.startsWith(item.href));
           const Icon = item.icon;
 
           return (
             <Link
               key={item.name}
               href={item.href}
+              onClick={onClose}
               className={cn(
                 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 group',
                 isActive
                   ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/10 border border-indigo-500/20'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/40'
+                  : 'text-muted hover:text-foreground hover:bg-muted-bg/40'
               )}
             >
               <Icon className={cn(
                 'h-5 w-5 transition-transform duration-200 group-hover:scale-105',
-                isActive ? 'text-white' : 'text-zinc-500 group-hover:text-zinc-300'
+                isActive ? 'text-white' : 'text-muted group-hover:text-foreground'
               )} />
               <span>{item.name}</span>
             </Link>
@@ -101,34 +114,35 @@ export function Sidebar({ className }: SidebarProps) {
       </nav>
 
       {/* User Footer Profile */}
-      <div className="border-t border-zinc-900 pt-4 mt-auto">
+      <div className="border-t border-border pt-4 mt-auto">
         <div className="flex items-center gap-3 px-2 py-1.5 mb-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 font-bold text-white text-sm">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted-bg border border-border font-bold text-white text-sm">
             {user?.name?.slice(0, 2).toUpperCase() || 'DM'}
           </div>
           <div className="flex-1 overflow-hidden">
             <h4 className="text-xs font-bold text-white truncate leading-snug">{user?.name}</h4>
-            <p className="text-[10px] text-zinc-500 truncate leading-none">{user?.email}</p>
+            <p className="text-[10px] text-muted truncate leading-none">{user?.email}</p>
           </div>
         </div>
 
         <Link
           href="/"
-          className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-zinc-500 hover:text-zinc-250 hover:bg-zinc-900/40 transition-all duration-200 group mb-1"
+          className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-muted hover:text-foreground hover:bg-muted-bg/40 transition-all duration-200 group mb-1"
         >
-          <Home className="h-4 w-4 text-zinc-500 group-hover:text-zinc-400 transition-transform duration-200" />
+          <Home className="h-4 w-4 text-muted group-hover:text-muted transition-transform duration-200" />
           <span>Back to Homepage</span>
         </Link>
 
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-zinc-500 hover:text-rose-400 hover:bg-rose-500/5 transition-all duration-200 group"
+          className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-muted hover:text-rose-400 hover:bg-rose-500/5 transition-all duration-200 group"
         >
-          <LogOut className="h-4 w-4 text-zinc-500 group-hover:text-rose-400 transition-transform duration-200 group-hover:translate-x-0.5" />
+          <LogOut className="h-4 w-4 text-muted group-hover:text-rose-400 transition-transform duration-200 group-hover:translate-x-0.5" />
           <span>Sign Out</span>
         </button>
       </div>
     </aside>
+    </>
   );
 }
 export default Sidebar;

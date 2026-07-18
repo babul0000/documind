@@ -262,7 +262,7 @@ export default function DocumentDetailsPage() {
         <h3 className="font-bold text-white text-base">Document not found</h3>
         <p className="text-xs text-rose-300 mt-1 max-w-sm">The document may have been deleted or the access permission is missing.</p>
         <Link href="/documents" className="mt-4">
-          <Button variant="outline" className="h-9.5 text-xs rounded-xl border-zinc-800 flex items-center gap-1.5">
+          <Button variant="outline" className="h-9.5 text-xs rounded-xl border-border flex items-center gap-1.5">
             <ChevronLeft className="h-4 w-4" />
             <span>Back to explore</span>
           </Button>
@@ -284,7 +284,7 @@ export default function DocumentDetailsPage() {
       {/* Back Header */}
       <div className="flex items-center justify-between">
         <Link href="/documents">
-          <button className="h-9 text-xs font-bold text-zinc-450 hover:text-white bg-zinc-955 hover:bg-zinc-900 border border-zinc-900 rounded-xl px-3.5 flex items-center gap-1.5 transition-all">
+          <button className="h-9 text-xs font-bold text-muted hover:text-white bg-card-bg hover:bg-muted-bg border border-border rounded-xl px-3.5 flex items-center gap-1.5 transition-all">
             <ChevronLeft className="h-4 w-4" />
             <span>All Documents</span>
           </button>
@@ -305,42 +305,42 @@ export default function DocumentDetailsPage() {
         <div className="lg:col-span-7 space-y-6">
           
           {/* Header Specs Card */}
-          <div className="bg-zinc-950/40 border border-zinc-900/80 p-6 rounded-2xl backdrop-blur-xl space-y-4">
+          <div className="bg-background/40 border border-border/80 p-6 rounded-2xl backdrop-blur-xl space-y-4">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[10px] font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                 {docData.category || 'General'}
               </span>
-              <span className="text-[10px] font-bold text-zinc-450 bg-zinc-900 border border-zinc-850 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-muted bg-muted-bg border border-border px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                 {fileLabel}
               </span>
             </div>
             <div className="space-y-1.5">
               <h1 className="text-xl font-bold text-white tracking-tight leading-snug">{docData.title}</h1>
               {docData.description && (
-                <p className="text-xs text-zinc-450 leading-relaxed">{docData.description}</p>
+                <p className="text-xs text-muted leading-relaxed">{docData.description}</p>
               )}
             </div>
             
             {/* Horizontal Specs */}
-            <div className="grid grid-cols-3 gap-4 pt-2 border-t border-zinc-900/40">
+            <div className="grid grid-cols-3 gap-4 pt-2 border-t border-border/40">
               <div className="flex items-center gap-2.5">
-                <Calendar className="h-4 w-4 text-zinc-555" />
+                <Calendar className="h-4 w-4 text-muted" />
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[8px] font-bold uppercase text-zinc-550">Uploaded</span>
+                  <span className="text-[8px] font-bold uppercase text-muted">Uploaded</span>
                   <span className="text-[10px] font-semibold text-white truncate">{formattedDate}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
-                <FileText className="h-4 w-4 text-zinc-555" />
+                <FileText className="h-4 w-4 text-muted" />
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[8px] font-bold uppercase text-zinc-550">File Size</span>
+                  <span className="text-[8px] font-bold uppercase text-muted">File Size</span>
                   <span className="text-[10px] font-semibold text-white truncate">{formattedSize}</span>
                 </div>
               </div>
               <div className="flex items-center gap-2.5">
-                <Shield className="h-4 w-4 text-zinc-555" />
+                <Shield className="h-4 w-4 text-muted" />
                 <div className="flex flex-col min-w-0">
-                  <span className="text-[8px] font-bold uppercase text-zinc-550">Status</span>
+                  <span className="text-[8px] font-bold uppercase text-muted">Status</span>
                   <span className="text-[10px] font-semibold text-emerald-400 truncate capitalize">{docData.status}</span>
                 </div>
               </div>
@@ -348,13 +348,13 @@ export default function DocumentDetailsPage() {
           </div>
 
           {/* AI Intelligence Workspace Tab Bar */}
-          <div className="flex items-center border-b border-zinc-900 bg-zinc-950/20 p-1 rounded-xl">
+          <div className="flex items-center border-b border-border bg-background/20 p-1 rounded-xl">
             <button
               onClick={() => setActiveTab('overview')}
               className={`flex-1 py-2 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'overview'
-                  ? 'bg-zinc-900 text-white border border-zinc-800'
-                  : 'text-zinc-450 hover:text-white'
+                  ? 'bg-muted-bg text-white border border-border'
+                  : 'text-muted hover:text-white'
               }`}
             >
               <FileText className="h-3.5 w-3.5" />
@@ -364,8 +364,8 @@ export default function DocumentDetailsPage() {
               onClick={() => setActiveTab('audit')}
               className={`flex-1 py-2 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'audit'
-                  ? 'bg-zinc-900 text-white border border-zinc-800'
-                  : 'text-zinc-450 hover:text-white'
+                  ? 'bg-muted-bg text-white border border-border'
+                  : 'text-muted hover:text-white'
               }`}
             >
               <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
@@ -375,8 +375,8 @@ export default function DocumentDetailsPage() {
               onClick={() => setActiveTab('classify')}
               className={`flex-1 py-2 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'classify'
-                  ? 'bg-zinc-900 text-white border border-zinc-800'
-                  : 'text-zinc-450 hover:text-white'
+                  ? 'bg-muted-bg text-white border border-border'
+                  : 'text-muted hover:text-white'
               }`}
             >
               <Layers className="h-3.5 w-3.5 text-indigo-400" />
@@ -386,8 +386,8 @@ export default function DocumentDetailsPage() {
               onClick={() => setActiveTab('recommend')}
               className={`flex-1 py-2 text-[11px] font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
                 activeTab === 'recommend'
-                  ? 'bg-zinc-900 text-white border border-zinc-800'
-                  : 'text-zinc-450 hover:text-white'
+                  ? 'bg-muted-bg text-white border border-border'
+                  : 'text-muted hover:text-white'
               }`}
             >
               <Lightbulb className="h-3.5 w-3.5 text-indigo-400" />
@@ -399,46 +399,46 @@ export default function DocumentDetailsPage() {
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* Executive Summary */}
-              <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
-                <CardHeader className="p-5 pb-3 border-b border-zinc-900/50 flex flex-row items-center gap-2">
+              <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
+                <CardHeader className="p-5 pb-3 border-b border-border/50 flex flex-row items-center gap-2">
                   <Sparkles className="h-4.5 w-4.5 text-indigo-400" />
                   <CardTitle className="text-xs font-bold text-white tracking-tight">AI Executive Summary</CardTitle>
                 </CardHeader>
                 <CardContent className="p-5">
                   {docData.status === 'processing' ? (
-                    <div className="flex items-center gap-2.5 text-zinc-450 text-xs">
+                    <div className="flex items-center gap-2.5 text-muted text-xs">
                       <RefreshCw className="h-4 w-4 animate-spin text-indigo-400" />
                       <span>Gemini AI is generating the initial executive summary...</span>
                     </div>
                   ) : docData.summary ? (
-                    <p className="text-xs text-zinc-300 leading-relaxed whitespace-pre-line">{docData.summary}</p>
+                    <p className="text-xs text-foreground leading-relaxed whitespace-pre-line">{docData.summary}</p>
                   ) : (
-                    <p className="text-xs text-zinc-550 italic">No summary generated yet.</p>
+                    <p className="text-xs text-muted italic">No summary generated yet.</p>
                   )}
                 </CardContent>
               </Card>
 
               {/* Extraction Specs */}
               {docData.status === 'completed' && docData.keyInfo && (
-                <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
-                  <CardHeader className="p-5 pb-3 border-b border-zinc-900/50 flex flex-row items-center gap-2">
+                <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
+                  <CardHeader className="p-5 pb-3 border-b border-border/50 flex flex-row items-center gap-2">
                     <Layers className="h-4.5 w-4.5 text-indigo-400" />
                     <CardTitle className="text-xs font-bold text-white tracking-tight">Extracted Metadata Insights</CardTitle>
                   </CardHeader>
                   <CardContent className="p-5 space-y-4.5">
                     {docData.keyInfo.documentType && (
                       <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-wider shrink-0 w-24">Document Type:</span>
+                        <span className="text-[10px] font-bold text-muted uppercase tracking-wider shrink-0 w-24">Document Type:</span>
                         <span className="text-xs font-bold text-white">{docData.keyInfo.documentType}</span>
                       </div>
                     )}
                     
                     {docData.keyInfo.importantDates && docData.keyInfo.importantDates.length > 0 && (
                       <div className="space-y-1.5">
-                        <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-wider block">Key Dates Mentioned</span>
+                        <span className="text-[10px] font-bold text-muted uppercase tracking-wider block">Key Dates Mentioned</span>
                         <div className="flex flex-wrap gap-2">
                           {docData.keyInfo.importantDates.map((date, index) => (
-                            <span key={index} className="text-xs font-semibold text-zinc-350 bg-zinc-900 border border-zinc-850 px-3 py-1 rounded-xl">
+                            <span key={index} className="text-xs font-semibold text-muted bg-muted-bg border border-border px-3 py-1 rounded-xl">
                               {date}
                             </span>
                           ))}
@@ -448,7 +448,7 @@ export default function DocumentDetailsPage() {
 
                     {docData.keyInfo.keyTopics && docData.keyInfo.keyTopics.length > 0 && (
                       <div className="space-y-1.5">
-                        <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-wider block">Extracted Topics</span>
+                        <span className="text-[10px] font-bold text-muted uppercase tracking-wider block">Extracted Topics</span>
                         <div className="flex flex-wrap gap-2">
                           {docData.keyInfo.keyTopics.map((topic, index) => (
                             <span key={index} className="text-[11px] font-bold text-indigo-400 bg-indigo-500/5 border border-indigo-500/10 px-3 py-1 rounded-xl">
@@ -468,11 +468,11 @@ export default function DocumentDetailsPage() {
           {activeTab === 'audit' && (
             <div className="space-y-6">
               {!analysis ? (
-                <div className="p-8 border border-dashed border-zinc-800 bg-zinc-950/20 rounded-2xl text-center space-y-4">
+                <div className="p-8 border border-dashed border-border bg-background/20 rounded-2xl text-center space-y-4">
                   <Brain className="h-10 w-10 text-indigo-400 mx-auto" />
                   <div className="space-y-1">
                     <h3 className="font-bold text-white text-sm">Document Analyzer Agent</h3>
-                    <p className="text-xs text-zinc-450 max-w-sm mx-auto">Analyze the entire document text to generate an in-depth summary, key takeaways list, critical sections breakdown, and task checklists.</p>
+                    <p className="text-xs text-muted max-w-sm mx-auto">Analyze the entire document text to generate an in-depth summary, key takeaways list, critical sections breakdown, and task checklists.</p>
                   </div>
                   <Button 
                     onClick={handleRunAnalyzer}
@@ -495,23 +495,23 @@ export default function DocumentDetailsPage() {
               ) : (
                 <div className="space-y-6">
                   {/* Detailed Summary */}
-                  <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
+                  <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
                     <CardHeader className="p-5 pb-2">
                       <CardTitle className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Executive Deep Summary</CardTitle>
                     </CardHeader>
                     <CardContent className="p-5 pt-0">
-                      <p className="text-xs text-zinc-300 leading-relaxed">{analysis.summary}</p>
+                      <p className="text-xs text-foreground leading-relaxed">{analysis.summary}</p>
                     </CardContent>
                   </Card>
 
                   {/* Key Takeaways */}
-                  <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
+                  <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
                     <CardHeader className="p-5 pb-2">
                       <CardTitle className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Core Takeaways</CardTitle>
                     </CardHeader>
                     <CardContent className="p-5 pt-0 space-y-2.5">
                       {analysis.keyPoints.map((pt, index) => (
-                        <div key={index} className="flex items-start gap-2.5 text-xs text-zinc-300">
+                        <div key={index} className="flex items-start gap-2.5 text-xs text-foreground">
                           <CheckCircle className="h-4 w-4 text-indigo-500 shrink-0 mt-0.5" />
                           <span className="leading-relaxed">{pt}</span>
                         </div>
@@ -521,18 +521,18 @@ export default function DocumentDetailsPage() {
 
                   {/* Critical Sections */}
                   {analysis.importantSections && analysis.importantSections.length > 0 && (
-                    <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
+                    <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
                       <CardHeader className="p-5 pb-2">
                         <CardTitle className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Critical Sections Breakdown</CardTitle>
                       </CardHeader>
                       <CardContent className="p-5 pt-0 space-y-3.5">
                         {analysis.importantSections.map((sec, index) => (
-                          <div key={index} className="p-3 bg-zinc-900/40 border border-zinc-900 rounded-xl space-y-1">
+                          <div key={index} className="p-3 bg-muted-bg/40 border border-border rounded-xl space-y-1">
                             <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
                               <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
                               {sec.sectionTitle}
                             </h4>
-                            <p className="text-[11px] text-zinc-450 leading-relaxed pl-3">{sec.significance}</p>
+                            <p className="text-[11px] text-muted leading-relaxed pl-3">{sec.significance}</p>
                           </div>
                         ))}
                       </CardContent>
@@ -541,16 +541,16 @@ export default function DocumentDetailsPage() {
 
                   {/* Task / Action Items Checklist */}
                   {analysis.actionItems && analysis.actionItems.length > 0 && (
-                    <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
+                    <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
                       <CardHeader className="p-5 pb-2">
                         <CardTitle className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Action Items Checklist</CardTitle>
                       </CardHeader>
                       <CardContent className="p-5 pt-0 space-y-3">
                         {analysis.actionItems.map((item, index) => (
-                          <div key={index} className="flex items-start gap-2.5 text-xs text-zinc-350 bg-zinc-900/10 border border-zinc-900 p-3 rounded-xl">
+                          <div key={index} className="flex items-start gap-2.5 text-xs text-muted bg-muted-bg/10 border border-border p-3 rounded-xl">
                             <input 
                               type="checkbox" 
-                              className="mt-1 h-3.5 w-3.5 rounded border-zinc-800 bg-zinc-900 text-indigo-600 focus:ring-indigo-500/50 shrink-0 cursor-pointer"
+                              className="mt-1 h-3.5 w-3.5 rounded border-border bg-muted-bg text-indigo-600 focus:ring-indigo-500/50 shrink-0 cursor-pointer"
                             />
                             <span className="leading-relaxed">{item}</span>
                           </div>
@@ -567,11 +567,11 @@ export default function DocumentDetailsPage() {
           {activeTab === 'classify' && (
             <div className="space-y-6">
               {!classification ? (
-                <div className="p-8 border border-dashed border-zinc-800 bg-zinc-950/20 rounded-2xl text-center space-y-4">
+                <div className="p-8 border border-dashed border-border bg-background/20 rounded-2xl text-center space-y-4">
                   <Layers className="h-10 w-10 text-indigo-400 mx-auto" />
                   <div className="space-y-1">
                     <h3 className="font-bold text-white text-sm">Classification Agent</h3>
-                    <p className="text-xs text-zinc-450 max-w-sm mx-auto">Automatically classify document categories, generate descriptive titles, and organize keyword tags to optimize file search.</p>
+                    <p className="text-xs text-muted max-w-sm mx-auto">Automatically classify document categories, generate descriptive titles, and organize keyword tags to optimize file search.</p>
                   </div>
                   <Button 
                     onClick={handleRunClassification}
@@ -592,15 +592,15 @@ export default function DocumentDetailsPage() {
                   </Button>
                 </div>
               ) : (
-                <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
-                  <CardHeader className="p-5 pb-3 border-b border-zinc-900/50">
+                <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
+                  <CardHeader className="p-5 pb-3 border-b border-border/50">
                     <CardTitle className="text-xs font-bold text-white uppercase tracking-wider">Smart Classification Recommendations</CardTitle>
                   </CardHeader>
                   <CardContent className="p-5 space-y-5">
                     {/* Suggested Title */}
                     <div className="space-y-1.5">
-                      <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-wider">Suggested Search Title</span>
-                      <div className="p-3 bg-zinc-900 border border-zinc-850 rounded-xl">
+                      <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Suggested Search Title</span>
+                      <div className="p-3 bg-muted-bg border border-border rounded-xl">
                         <input
                           type="text"
                           value={classification.suggestedTitle}
@@ -612,8 +612,8 @@ export default function DocumentDetailsPage() {
 
                     {/* Category */}
                     <div className="space-y-1.5">
-                      <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-wider">Auto Category</span>
-                      <div className="p-3 bg-zinc-900 border border-zinc-850 rounded-xl">
+                      <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Auto Category</span>
+                      <div className="p-3 bg-muted-bg border border-border rounded-xl">
                         <input
                           type="text"
                           value={classification.category}
@@ -625,7 +625,7 @@ export default function DocumentDetailsPage() {
 
                     {/* Tags */}
                     <div className="space-y-1.5">
-                      <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-wider">Keywords & Tags</span>
+                      <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Keywords & Tags</span>
                       <div className="flex flex-wrap gap-2">
                         {classification.tags.map((tag, index) => (
                           <span key={index} className="text-xs font-bold text-indigo-400 bg-indigo-500/5 border border-indigo-500/10 px-3 py-1 rounded-xl flex items-center gap-1">
@@ -636,7 +636,7 @@ export default function DocumentDetailsPage() {
                     </div>
 
                     {/* Save Button */}
-                    <div className="pt-2 border-t border-zinc-900/40 flex justify-end">
+                    <div className="pt-2 border-t border-border/40 flex justify-end">
                       <Button
                         onClick={handleSaveClassification}
                         disabled={isSavingClassification}
@@ -660,11 +660,11 @@ export default function DocumentDetailsPage() {
           {activeTab === 'recommend' && (
             <div className="space-y-6">
               {!recommendations ? (
-                <div className="p-8 border border-dashed border-zinc-800 bg-zinc-950/20 rounded-2xl text-center space-y-4">
+                <div className="p-8 border border-dashed border-border bg-background/20 rounded-2xl text-center space-y-4">
                   <Lightbulb className="h-10 w-10 text-indigo-400 mx-auto" />
                   <div className="space-y-1">
                     <h3 className="font-bold text-white text-sm">AI Recommendation Agent</h3>
-                    <p className="text-xs text-zinc-450 max-w-sm mx-auto">Compares this file against other library documents, suggesting related files, learning paths, tutorials, and priority next tasks.</p>
+                    <p className="text-xs text-muted max-w-sm mx-auto">Compares this file against other library documents, suggesting related files, learning paths, tutorials, and priority next tasks.</p>
                   </div>
                   <Button 
                     onClick={handleRunRecommendations}
@@ -687,20 +687,20 @@ export default function DocumentDetailsPage() {
               ) : (
                 <div className="space-y-6">
                   {/* Related Documents */}
-                  <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
+                  <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
                     <CardHeader className="p-5 pb-2">
                       <CardTitle className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Related Files (Library)</CardTitle>
                     </CardHeader>
                     <CardContent className="p-5 pt-0 space-y-3.5">
                       {recommendations.relatedDocuments.length === 0 ? (
-                        <p className="text-xs text-zinc-550 italic">No other related documents found in the database.</p>
+                        <p className="text-xs text-muted italic">No other related documents found in the database.</p>
                       ) : (
                         recommendations.relatedDocuments.map((rd, idx) => (
-                          <div key={idx} className="p-3 bg-zinc-900/40 border border-zinc-900 rounded-xl flex items-start gap-3">
+                          <div key={idx} className="p-3 bg-muted-bg/40 border border-border rounded-xl flex items-start gap-3">
                             <FileText className="h-4.5 w-4.5 text-indigo-400 shrink-0 mt-0.5" />
                             <div className="flex flex-col min-w-0">
                               <span className="text-xs font-bold text-white">{rd.title}</span>
-                              <span className="text-[10px] text-zinc-450 mt-1 leading-relaxed">{rd.reason}</span>
+                              <span className="text-[10px] text-muted mt-1 leading-relaxed">{rd.reason}</span>
                               <Link href={`/dashboard/documents/${rd.id}`} className="text-[10px] text-indigo-400 font-bold mt-2 flex items-center gap-0.5 hover:text-indigo-300">
                                 <span>Go to document</span>
                                 <ArrowRight className="h-3 w-3" />
@@ -713,7 +713,7 @@ export default function DocumentDetailsPage() {
                   </Card>
 
                   {/* Study / Learning Resources */}
-                  <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
+                  <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
                     <CardHeader className="p-5 pb-2">
                       <CardTitle className="text-xs font-bold text-indigo-400 uppercase tracking-wider">AI Learning Paths & Resources</CardTitle>
                     </CardHeader>
@@ -723,7 +723,7 @@ export default function DocumentDetailsPage() {
                           <BookOpen className="h-4.5 w-4.5 text-indigo-400 shrink-0 mt-0.5" />
                           <div className="flex flex-col">
                             <span className="text-xs font-bold text-white">{res.title}</span>
-                            <span className="text-[10px] text-zinc-450 mt-0.5 leading-relaxed">{res.description}</span>
+                            <span className="text-[10px] text-muted mt-0.5 leading-relaxed">{res.description}</span>
                           </div>
                         </div>
                       ))}
@@ -731,15 +731,15 @@ export default function DocumentDetailsPage() {
                   </Card>
 
                   {/* Priority Actions */}
-                  <Card className="border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl">
+                  <Card className="border-border bg-background/40 backdrop-blur-xl rounded-2xl">
                     <CardHeader className="p-5 pb-2">
                       <CardTitle className="text-xs font-bold text-indigo-400 uppercase tracking-wider">Suggested Next Actions</CardTitle>
                     </CardHeader>
                     <CardContent className="p-5 pt-0 space-y-3.5">
                       {recommendations.nextActions.map((act, idx) => (
-                        <div key={idx} className="p-3 bg-zinc-900/30 border border-zinc-900 rounded-xl space-y-1.5">
+                        <div key={idx} className="p-3 bg-muted-bg/30 border border-border rounded-xl space-y-1.5">
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-bold uppercase text-zinc-550">Action suggestion</span>
+                            <span className="text-[9px] font-bold uppercase text-muted">Action suggestion</span>
                             <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full ${
                               act.priority === 'High' 
                                 ? 'text-rose-455 bg-rose-500/10 border border-rose-500/20' 
@@ -751,7 +751,7 @@ export default function DocumentDetailsPage() {
                             </span>
                           </div>
                           <p className="text-xs font-semibold text-white leading-relaxed">{act.action}</p>
-                          <p className="text-[10px] text-zinc-450 leading-relaxed">{act.reason}</p>
+                          <p className="text-[10px] text-muted leading-relaxed">{act.reason}</p>
                         </div>
                       ))}
                     </CardContent>
@@ -764,15 +764,15 @@ export default function DocumentDetailsPage() {
         </div>
 
         {/* Right Column: AI Chat Assistant (Agent 3) */}
-        <div className="lg:col-span-5 h-[calc(100vh-170px)] min-h-[550px] flex flex-col border border-zinc-900 bg-zinc-950/40 backdrop-blur-xl rounded-2xl overflow-hidden relative">
+        <div className="lg:col-span-5 h-[calc(100vh-170px)] min-h-[550px] flex flex-col border border-border bg-background/40 backdrop-blur-xl rounded-2xl overflow-hidden relative">
           
           {/* Chat Header */}
-          <div className="p-4.5 border-b border-zinc-900/60 flex items-center justify-between bg-zinc-900/10">
+          <div className="p-4.5 border-b border-border/60 flex items-center justify-between bg-muted-bg/10">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-4.5 w-4.5 text-indigo-400" />
               <div>
                 <h3 className="font-bold text-sm text-white">Ask your Document</h3>
-                <p className="text-[10px] text-zinc-500">Contextual answers powered by Gemini AI</p>
+                <p className="text-[10px] text-muted">Contextual answers powered by Gemini AI</p>
               </div>
             </div>
           </div>
@@ -781,9 +781,9 @@ export default function DocumentDetailsPage() {
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {localMessages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-2.5">
-                <HelpCircle className="h-9 w-9 text-zinc-650 animate-bounce" />
-                <h4 className="font-bold text-xs text-zinc-405">Chat with document text</h4>
-                <p className="text-[10px] text-zinc-500 max-w-xs leading-relaxed">Ask specific questions about clauses, terms, figures or dates inside this file. The assistant answers with ground truths.</p>
+                <HelpCircle className="h-9 w-9 text-muted animate-bounce" />
+                <h4 className="font-bold text-xs text-muted">Chat with document text</h4>
+                <p className="text-[10px] text-muted max-w-xs leading-relaxed">Ask specific questions about clauses, terms, figures or dates inside this file. The assistant answers with ground truths.</p>
               </div>
             ) : (
               localMessages.map((m) => {
@@ -797,7 +797,7 @@ export default function DocumentDetailsPage() {
                       className={`max-w-[85%] rounded-2xl px-4 py-2.5 text-xs leading-relaxed ${
                         isUser
                           ? 'bg-indigo-600 text-white rounded-br-none font-medium'
-                          : 'bg-zinc-900/70 border border-zinc-850 text-zinc-250 rounded-bl-none'
+                          : 'bg-muted-bg/70 border border-border text-foreground rounded-bl-none'
                       }`}
                     >
                       <p className="whitespace-pre-line">{m.text}</p>
@@ -810,7 +810,7 @@ export default function DocumentDetailsPage() {
             {/* Typing Indicator */}
             {isSending && (
               <div className="flex justify-start">
-                <div className="bg-zinc-900/40 border border-zinc-850 text-zinc-400 rounded-2xl rounded-bl-none px-4 py-2.5 text-xs flex items-center gap-2 animate-pulse">
+                <div className="bg-muted-bg/40 border border-border text-muted rounded-2xl rounded-bl-none px-4 py-2.5 text-xs flex items-center gap-2 animate-pulse">
                   <RefreshCw className="h-3.5 w-3.5 animate-spin text-indigo-400" />
                   <span>AI Assistant is reading context...</span>
                 </div>
@@ -820,17 +820,17 @@ export default function DocumentDetailsPage() {
           </div>
 
           {/* Chat Actions & Suggested Questions & Input Bar */}
-          <div className="p-4 border-t border-zinc-900/60 bg-zinc-900/10 space-y-3.5">
+          <div className="p-4 border-t border-border/60 bg-muted-bg/10 space-y-3.5">
             {/* Interactive follow-up badges */}
             {!isSending && suggestedFollowUps.length > 0 && (
               <div className="space-y-1">
-                <span className="text-[9px] font-bold text-zinc-550 uppercase tracking-wider block">Suggested Questions</span>
+                <span className="text-[9px] font-bold text-muted uppercase tracking-wider block">Suggested Questions</span>
                 <div className="flex flex-wrap gap-2">
                   {suggestedFollowUps.slice(0, 3).map((q, idx) => (
                     <button
                       key={idx}
                       onClick={() => handleSendMessage(q)}
-                      className="text-[10px] text-left text-zinc-350 hover:text-white bg-zinc-900 hover:bg-zinc-850 border border-zinc-800 rounded-lg px-2.5 py-1.5 transition-colors cursor-pointer"
+                      className="text-[10px] text-left text-muted hover:text-white bg-muted-bg hover:bg-zinc-850 border border-border rounded-lg px-2.5 py-1.5 transition-colors cursor-pointer"
                     >
                       {q}
                     </button>
@@ -845,7 +845,7 @@ export default function DocumentDetailsPage() {
                 e.preventDefault();
                 handleSendMessage(chatInput);
               }}
-              className="relative flex items-center bg-zinc-900/30 border border-zinc-900 hover:border-zinc-850 focus-within:border-indigo-500/80 rounded-xl transition-all"
+              className="relative flex items-center bg-muted-bg/30 border border-border hover:border-border focus-within:border-indigo-500/80 rounded-xl transition-all"
             >
               <input
                 type="text"
