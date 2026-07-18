@@ -218,33 +218,37 @@ export function GlobalChatWidget() {
           </div>
 
           {/* Quick suggestions */}
-          <div className="p-4 border-t border-border bg-background/50 space-y-2.5">
-            <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider text-muted">
-              <span>Suggested Prompts</span>
-              {chatHistory.length > 0 && (
-                <div className="flex gap-2">
-                  <button onClick={regenerateLastMessage} className="hover:text-white flex items-center gap-1 cursor-pointer">
-                    <RotateCcw className="h-2.5 w-2.5" /> <span>Regenerate</span>
+          {chatHistory.length === 0 ? (
+            <div className="p-4 border-t border-border bg-background/50 space-y-2.5">
+              <div className="flex items-center justify-between text-[9px] font-bold uppercase tracking-wider text-muted">
+                <span>Suggested Prompts</span>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {suggestedQuestions.slice(0, 3).map((q, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => handleSendMessage(q)}
+                    disabled={isSendingChat}
+                    className="w-full text-left p-2 rounded-xl border border-border bg-card-bg text-[10px] text-zinc-450 hover:text-white hover:bg-muted-bg transition-all cursor-pointer font-semibold truncate leading-normal"
+                  >
+                    {q}
                   </button>
-                  <button onClick={clearChatHistory} className="hover:text-rose-450 flex items-center gap-1 cursor-pointer text-zinc-650">
-                    <Trash2 className="h-2.5 w-2.5" /> <span>Clear</span>
-                  </button>
-                </div>
-              )}
+                ))}
+              </div>
             </div>
-            <div className="flex flex-col gap-1.5">
-              {suggestedQuestions.slice(0, 3).map((q, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleSendMessage(q)}
-                  disabled={isSendingChat}
-                  className="w-full text-left p-2 rounded-xl border border-border bg-card-bg text-[10px] text-zinc-450 hover:text-white hover:bg-muted-bg transition-all cursor-pointer font-semibold truncate leading-normal"
-                >
-                  {q}
+          ) : (
+            <div className="p-3 border-t border-border bg-background/30 flex items-center justify-between text-[9px] font-bold uppercase tracking-wider text-muted">
+              <span>Chat Session Active</span>
+              <div className="flex gap-2.5">
+                <button onClick={regenerateLastMessage} className="hover:text-white flex items-center gap-1 cursor-pointer">
+                  <RotateCcw className="h-2.5 w-2.5" /> <span>Regenerate</span>
                 </button>
-              ))}
+                <button onClick={clearChatHistory} className="hover:text-rose-450 flex items-center gap-1 cursor-pointer text-zinc-650">
+                  <Trash2 className="h-2.5 w-2.5" /> <span>Clear Chat</span>
+                </button>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Input control */}
           <div className="p-4 border-t border-border bg-card-bg">
