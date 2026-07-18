@@ -64,6 +64,16 @@ export const api = {
     return handleResponse(res);
   },
 
+  async put<T>(endpoint: string, body: any): Promise<T> {
+    const res = await fetch(`${BASE_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(body),
+      credentials: 'include',
+    });
+    return handleResponse(res);
+  },
+
   async upload<T>(endpoint: string, formData: FormData): Promise<T> {
     const res = await fetch(`${BASE_URL}${endpoint}`, {
       method: 'POST',
@@ -72,6 +82,45 @@ export const api = {
       credentials: 'include',
     });
     return handleResponse(res);
+  },
+
+  uploadWithProgress<T>(endpoint: string, formData: FormData, onProgress: (percent: number) => void): Promise<T> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `${BASE_URL}${endpoint}`);
+      
+      const token = getCookie("better-auth.session_token");
+      if (token) {
+        xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      }
+      
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percent = Math.round((event.loaded / event.total) * 100);
+          onProgress(percent);
+        }
+      };
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            resolve(JSON.parse(xhr.responseText));
+          } catch (e) {
+            resolve(xhr.responseText as any);
+          }
+        } else {
+          try {
+            const err = JSON.parse(xhr.responseText);
+            reject(new Error(err.error || 'Upload failed'));
+          } catch {
+            reject(new Error('Upload failed'));
+          }
+        }
+      };
+
+      xhr.onerror = () => reject(new Error('Network error'));
+      xhr.send(formData);
+    });
   },
 
   async delete<T>(endpoint: string): Promise<T> {

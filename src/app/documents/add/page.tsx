@@ -5,12 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { UploadCloud, FileText, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
+import { 
+  UploadCloud, FileText, CheckCircle2, AlertCircle, RefreshCw, 
+  Trash2, FileCode, Check, ArrowRight
+} from 'lucide-react';
 import { api } from '../../../services/api';
 import { useAuth } from '../../../hooks/use-auth';
 import { Sidebar } from '../../../components/dashboard/sidebar';
 import { Navbar } from '../../../components/dashboard/navbar';
-import { Spinner } from '../../../components/ui/spinner';
 
 const documentSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters long'),
@@ -30,9 +32,15 @@ export default function AddDocumentPage() {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
+  const [filePreviewText, setFilePreviewText] = useState<string | null>(null);
+  const [isDragActive, setIsDragActive] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
   const [generalError, setGeneralError] = useState<string | null>(null);
+  
+  // Progress states
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [processingStage, setProcessingStage] = useState<'idle' | 'uploading' | 'parsing' | 'extracting' | 'done'>('idle');
   const [uploadSuccess, setUploadSuccess] = useState(false);
 
   const {
@@ -55,23 +63,22 @@ export default function AddDocumentPage() {
 
   const categoryValue = watch('category');
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const processSelectedFile = (selectedFile: File) => {
     setFileError(null);
     setUploadSuccess(false);
-    const selectedFile = e.target.files?.[0];
-    if (!selectedFile) return;
 
     // Validate size (max 10MB)
     if (selectedFile.size > 10 * 1024 * 1024) {
       setFileError('File exceeds maximum size limits (10MB)');
       setFile(null);
+      setFilePreviewText(null);
       return;
     }
 
     // Validate file type
     const validTypes = [
       'application/pdf',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // DOCX
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       'text/plain',
     ];
     
@@ -81,56 +88,65 @@ export default function AddDocumentPage() {
     if (!isValidType) {
       setFileError('Invalid file format. Upload PDF, DOCX or TXT files only.');
       setFile(null);
+      setFilePreviewText(null);
       return;
     }
 
     setFile(selectedFile);
+
     // Auto-fill title with filename if empty
     const currentTitle = watch('title');
     if (!currentTitle) {
       const fileNameWithoutExt = selectedFile.name.replace(/\.[^/.]+$/, "");
       setValue('title', fileNameWithoutExt);
     }
+
+    // If text file, generate preview snippet
+    if (selectedFile.type === 'text/plain' || fileExt === 'txt') {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const text = e.target?.result as string;
+        setFilePreviewText(text.slice(0, 250) + (text.length > 250 ? '...' : ''));
+      };
+      reader.readAsText(selectedFile.slice(0, 500));
+    } else {
+      setFilePreviewText(null);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      processSelectedFile(selectedFile);
+    }
   };
 
   const onDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+    setIsDragActive(true);
+  };
+
+  const onDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragActive(false);
   };
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    setFileError(null);
-    setUploadSuccess(false);
-
+    setIsDragActive(false);
     const droppedFile = e.dataTransfer.files?.[0];
-    if (!droppedFile) return;
-
-    if (droppedFile.size > 10 * 1024 * 1024) {
-      setFileError('File exceeds maximum size limits (10MB)');
-      setFile(null);
-      return;
+    if (droppedFile) {
+      processSelectedFile(droppedFile);
     }
+  };
 
-    const validTypes = [
-      'application/pdf',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'text/plain',
-    ];
-    
-    const fileExt = droppedFile.name.split('.').pop()?.toLowerCase();
-    const isValidType = validTypes.includes(droppedFile.type) || ['pdf', 'docx', 'txt'].includes(fileExt || '');
-
-    if (!isValidType) {
-      setFileError('Invalid file format. Upload PDF, DOCX or TXT files only.');
-      setFile(null);
-      return;
-    }
-
-    setFile(droppedFile);
-    const currentTitle = watch('title');
-    if (!currentTitle) {
-      const fileNameWithoutExt = droppedFile.name.replace(/\.[^/.]+$/, "");
-      setValue('title', fileNameWithoutExt);
+  const handleRemoveFile = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setFile(null);
+    setFilePreviewText(null);
+    setFileError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -143,6 +159,8 @@ export default function AddDocumentPage() {
     setIsUploading(true);
     setGeneralError(null);
     setUploadSuccess(false);
+    setUploadProgress(0);
+    setProcessingStage('uploading');
 
     try {
       const formData = new FormData();
@@ -155,11 +173,21 @@ export default function AddDocumentPage() {
         formData.append('imageUrl', values.imageUrl);
       }
 
-      await api.upload<any>('/documents/upload', formData);
+      // Execute upload tracking progress increments
+      await api.uploadWithProgress<any>('/documents/upload', formData, (percent) => {
+        setUploadProgress(percent);
+        if (percent === 100) {
+          setProcessingStage('parsing');
+          // Simulate parsing and extracting log progressions
+          setTimeout(() => setProcessingStage('extracting'), 1000);
+        }
+      });
 
+      setProcessingStage('done');
       setUploadSuccess(true);
       reset();
       setFile(null);
+      setFilePreviewText(null);
       
       // Redirect to explorer workspace after 1.5 seconds
       setTimeout(() => {
@@ -168,25 +196,21 @@ export default function AddDocumentPage() {
 
     } catch (err: any) {
       setGeneralError(err.message || 'File upload failed. Please try again.');
+      setProcessingStage('idle');
     } finally {
       setIsUploading(false);
     }
   };
 
   if (authLoading) {
-    return (
-      <div className="flex h-screen w-screen items-center justify-center bg-[#050505] text-zinc-400">
-        <div className="flex flex-col items-center gap-3">
-          <Spinner size="lg" />
-          <p className="text-xs font-semibold tracking-wider uppercase text-zinc-500">Initializing session...</p>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   if (!user) {
     return null;
   }
+
+  const fileExt = file?.name.split('.').pop()?.toLowerCase();
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-[#050505]">
@@ -234,12 +258,14 @@ export default function AddDocumentPage() {
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-500">Document Source</label>
                 <div
                   onDragOver={onDragOver}
+                  onDragLeave={onDragLeave}
                   onDrop={onDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all hover:bg-zinc-900/10 ${
+                  onClick={() => !isUploading && fileInputRef.current?.click()}
+                  className={`border-2 border-dashed rounded-xl p-8 flex flex-col items-center justify-center gap-2 cursor-pointer transition-all ${
+                    isDragActive ? 'border-indigo-500 bg-indigo-500/[0.04] scale-[0.99]' :
                     fileError ? 'border-rose-500/30 bg-rose-500/[0.02]' : 
-                    file ? 'border-indigo-500/30 bg-indigo-500/[0.02]' : 'border-zinc-800 bg-zinc-955'
-                  }`}
+                    file ? 'border-indigo-500/30 bg-indigo-500/[0.02]' : 'border-zinc-800 bg-zinc-955 hover:bg-zinc-900/10'
+                  } ${isUploading ? 'pointer-events-none opacity-60' : ''}`}
                 >
                   <input
                     type="file"
@@ -249,25 +275,56 @@ export default function AddDocumentPage() {
                     accept=".pdf,.docx,.txt,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain"
                   />
                   {file ? (
-                    <>
-                      <FileText className="h-8 w-8 text-indigo-500" />
-                      <div className="text-center">
-                        <span className="text-xs text-white font-bold block truncate max-w-sm">{file.name}</span>
-                        <span className="text-[10px] text-zinc-500 font-medium">{(file.size / 1024).toFixed(1)} KB</span>
+                    <div className="flex items-center justify-between w-full max-w-md bg-zinc-950 border border-zinc-900 p-4 rounded-xl relative overflow-hidden group">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="h-10 w-10 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-lg flex items-center justify-center shrink-0">
+                          <FileText className="h-5.5 w-5.5" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-xs text-white font-bold block truncate max-w-[200px]" title={file.name}>{file.name}</span>
+                          <span className="text-[10px] text-zinc-500 font-medium block">{(file.size / 1024).toFixed(1)} KB</span>
+                        </div>
                       </div>
-                    </>
+                      <button
+                        type="button"
+                        onClick={handleRemoveFile}
+                        className="h-8 w-8 rounded-lg text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 flex items-center justify-center transition-all cursor-pointer"
+                        title="Remove file"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   ) : (
                     <>
-                      <UploadCloud className="h-8 w-8 text-zinc-650 text-zinc-500" />
+                      <UploadCloud className="h-8 w-8 text-zinc-500" />
                       <div className="text-center">
                         <span className="text-xs text-zinc-400 font-bold block">Drag & Drop file here, or browse</span>
-                        <span className="text-[10px] text-zinc-650 mt-1 block">Supports PDF, DOCX, TXT up to 10MB</span>
+                        <span className="text-[10px] text-zinc-600 mt-1 block">Supports PDF, DOCX, TXT up to 10MB</span>
                       </div>
                     </>
                   )}
                 </div>
                 {fileError && <p className="text-[11px] text-rose-500 font-semibold">{fileError}</p>}
               </div>
+
+              {/* File Preview Snippet Box */}
+              {file && (
+                <div className="bg-zinc-950 border border-zinc-900 rounded-xl p-4.5 space-y-2">
+                  <h4 className="text-[9px] font-extrabold uppercase tracking-widest text-zinc-500 flex items-center gap-1.5">
+                    <FileCode className="h-3.5 w-3.5" />
+                    <span>File Context Preview</span>
+                  </h4>
+                  {filePreviewText ? (
+                    <div className="bg-[#09090b] rounded-lg p-3 text-[11px] text-zinc-400 font-mono whitespace-pre-wrap border border-zinc-900 select-none">
+                      {filePreviewText}
+                    </div>
+                  ) : (
+                    <div className="text-[11px] text-zinc-550 italic leading-relaxed">
+                      This file format ({fileExt?.toUpperCase()}) does not support raw snippet preview. We will parse and index all elements dynamically upon submission.
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Title input */}
               <div className="space-y-1.5">
@@ -276,7 +333,7 @@ export default function AddDocumentPage() {
                   type="text"
                   placeholder="e.g. Q3 Sales Agreement"
                   {...register('title')}
-                  className="w-full h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-600 transition-colors"
+                  className="w-full h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-650 transition-colors"
                 />
                 {errors.title && <p className="text-[11px] text-rose-500 font-semibold">{errors.title.message}</p>}
               </div>
@@ -288,7 +345,7 @@ export default function AddDocumentPage() {
                   type="text"
                   placeholder="A brief 1-sentence synopsis (10-150 chars)"
                   {...register('shortDescription')}
-                  className="w-full h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-600 transition-colors"
+                  className="w-full h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-650 transition-colors"
                 />
                 {errors.shortDescription && <p className="text-[11px] text-rose-500 font-semibold">{errors.shortDescription.message}</p>}
               </div>
@@ -298,68 +355,114 @@ export default function AddDocumentPage() {
                 <label className="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-500">Full Description</label>
                 <textarea
                   rows={4}
-                  placeholder="Provide extensive details, target audiences, or specific objectives of this document..."
+                  placeholder="Provide comprehensive details about this document (20-1000 chars)"
                   {...register('description')}
-                  className="w-full bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-white placeholder-zinc-600 transition-colors resize-none"
+                  className="w-full bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl p-4 text-xs text-white placeholder-zinc-650 transition-colors resize-none"
                 />
                 {errors.description && <p className="text-[11px] text-rose-500 font-semibold">{errors.description.message}</p>}
               </div>
 
               {/* Category */}
-              <div className="space-y-2">
-                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-500">Classification / Category</label>
-                <div className="flex flex-wrap gap-2 mb-2">
-                  {POPULAR_CATEGORIES.map((cat) => (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => setValue('category', cat, { shouldValidate: true })}
-                      className={`h-8 px-3 rounded-lg text-[10px] font-bold border transition-all cursor-pointer ${
-                        categoryValue === cat
-                          ? 'bg-accent border-accent text-white'
-                          : 'border-zinc-850 bg-zinc-955 text-zinc-400 hover:text-white hover:border-zinc-800'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-500">Classification Category</label>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  {POPULAR_CATEGORIES.map((cat) => {
+                    const isSelected = categoryValue === cat;
+                    return (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setValue('category', cat)}
+                        className={`h-9 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+                          isSelected 
+                            ? 'bg-indigo-600/10 border-indigo-500 text-indigo-400' 
+                            : 'bg-zinc-955 border-zinc-900 text-zinc-400 hover:border-zinc-800'
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    );
+                  })}
                 </div>
-                <input
-                  type="text"
-                  placeholder="Or enter custom category..."
-                  {...register('category')}
-                  className="w-full h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-600 transition-colors capitalize"
-                />
+                <div className="pt-2">
+                  <input
+                    type="text"
+                    placeholder="Or enter custom category..."
+                    {...register('category')}
+                    className="w-full h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-650 transition-colors"
+                  />
+                </div>
                 {errors.category && <p className="text-[11px] text-rose-500 font-semibold">{errors.category.message}</p>}
               </div>
 
-              {/* Optional image URL */}
+              {/* Image URL */}
               <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-500">Optional Cover Image URL</label>
+                <label className="block text-[10px] font-extrabold uppercase tracking-wider text-zinc-500">Preview Image URL (Optional)</label>
                 <input
                   type="text"
-                  placeholder="https://example.com/cover.png"
+                  placeholder="https://example.com/image.jpg"
                   {...register('imageUrl')}
-                  className="w-full h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-600 transition-colors"
+                  className="w-full h-10.5 bg-zinc-955 border border-zinc-900 hover:border-zinc-800 focus:border-indigo-500 focus:outline-none rounded-xl px-4 text-xs text-white placeholder-zinc-650 transition-colors"
                 />
                 {errors.imageUrl && <p className="text-[11px] text-rose-500 font-semibold">{errors.imageUrl.message}</p>}
               </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={isUploading}
-                className="w-full h-11 bg-accent text-white text-xs font-bold rounded-xl hover:opacity-90 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer mt-6"
-              >
-                {isUploading ? (
-                  <>
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    <span>Analyzing file details...</span>
-                  </>
-                ) : (
-                  <span>Submit & Start AI Summary</span>
-                )}
-              </button>
+              {/* Upload Progress Bar and Stage Indicators */}
+              {isUploading && (
+                <div className="bg-[#09090b] border border-zinc-900 p-5 rounded-xl space-y-4">
+                  <div className="flex items-center justify-between text-[10px] font-extrabold uppercase tracking-wider text-zinc-400">
+                    <span className="flex items-center gap-1.5">
+                      <RefreshCw className="h-3.5 w-3.5 animate-spin text-indigo-400" />
+                      <span>{processingStage === 'uploading' ? `Uploading file content (${uploadProgress}%)` : 
+                            processingStage === 'parsing' ? 'Parsing text structures' : 
+                            processingStage === 'extracting' ? 'Extracting AI takes & summaries' : 'Done!'}</span>
+                    </span>
+                    <span>{uploadProgress}%</span>
+                  </div>
+
+                  {/* Horizontal gauge progress */}
+                  <div className="w-full bg-zinc-900 rounded-full h-2 overflow-hidden">
+                    <div 
+                      className="bg-indigo-600 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+
+                  {/* Processing animation stage list */}
+                  <div className="grid grid-cols-3 gap-2 text-[8px] font-extrabold uppercase tracking-widest text-center">
+                    <div className={`p-2 rounded-lg border ${processingStage === 'uploading' ? 'bg-indigo-500/5 border-indigo-500 text-indigo-400' : 'bg-zinc-955 border-zinc-900 text-zinc-600'}`}>
+                      1. Upload File
+                    </div>
+                    <div className={`p-2 rounded-lg border ${processingStage === 'parsing' ? 'bg-indigo-500/5 border-indigo-500 text-indigo-400' : 'bg-zinc-955 border-zinc-900 text-zinc-600'}`}>
+                      2. Parse Content
+                    </div>
+                    <div className={`p-2 rounded-lg border ${processingStage === 'extracting' ? 'bg-indigo-500/5 border-indigo-500 text-indigo-400' : 'bg-zinc-955 border-zinc-900 text-zinc-600'}`}>
+                      3. AI Analysis
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Submit button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className="w-full h-11 bg-accent text-white text-xs font-bold rounded-xl hover:opacity-90 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {isUploading ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 animate-spin" />
+                      <span>Processing Document...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Submit Document</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </>
+                  )}
+                </button>
+              </div>
 
             </form>
           </div>

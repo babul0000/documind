@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, MessageSquareCode, BarChart3, LogOut, FileText, BrainCircuit, Compass, PlusCircle, FolderOpen } from 'lucide-react';
+import { LayoutDashboard, MessageSquareCode, BarChart3, LogOut, FileText, BrainCircuit, Compass, PlusCircle, FolderOpen, Sparkles, Home } from 'lucide-react';
 import { useAuth } from '../../hooks/use-auth';
 import { cn } from '../../utils/cn';
 
@@ -46,6 +46,11 @@ export function Sidebar({ className }: SidebarProps) {
       icon: MessageSquareCode,
     },
     {
+      name: 'Recommendations',
+      href: '/dashboard/recommendations',
+      icon: Sparkles,
+    },
+    {
       name: 'Analytics Insights',
       href: '/dashboard/analytics',
       icon: BarChart3,
@@ -54,11 +59,11 @@ export function Sidebar({ className }: SidebarProps) {
 
   return (
     <aside className={cn(
-      'flex h-screen w-64 flex-col border-r border-zinc-900 bg-zinc-950 px-4 py-6 text-zinc-300',
+      'flex h-screen w-64 flex-col border-r border-zinc-900 bg-zinc-955 px-4 py-6 text-zinc-300',
       className
     )}>
       {/* Brand Logo */}
-      <Link href="/dashboard" className="flex items-center gap-3 px-2 mb-8">
+      <Link href="/" className="flex items-center gap-3 px-2 mb-8">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-500 shadow-md">
           <BrainCircuit className="h-5.5 w-5.5 text-white" />
         </div>
@@ -107,11 +112,19 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         </div>
 
+        <Link
+          href="/"
+          className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-zinc-500 hover:text-zinc-250 hover:bg-zinc-900/40 transition-all duration-200 group mb-1"
+        >
+          <Home className="h-4 w-4 text-zinc-500 group-hover:text-zinc-400 transition-transform duration-200" />
+          <span>Back to Homepage</span>
+        </Link>
+
         <button
           onClick={logout}
-          className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-zinc-500 hover:text-rose-400 hover:bg-rose-500/5 transition-all duration-200 group"
+          className="flex w-full items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-zinc-500 hover:text-rose-400 hover:bg-rose-500/5 transition-all duration-200 group"
         >
-          <LogOut className="h-5 w-5 text-zinc-500 group-hover:text-rose-400 transition-transform duration-200 group-hover:translate-x-0.5" />
+          <LogOut className="h-4 w-4 text-zinc-500 group-hover:text-rose-400 transition-transform duration-200 group-hover:translate-x-0.5" />
           <span>Sign Out</span>
         </button>
       </div>

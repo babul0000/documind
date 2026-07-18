@@ -4,8 +4,8 @@ import React from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
 import { 
-  FileText, Calendar, Tag, Shield, Loader2, Sparkles, 
-  Layers, BarChart4, PieChart as PieIcon, CheckCircle2, AlertTriangle, ArrowUpRight 
+  FileText, Calendar, Sparkles, Layers, BarChart4, 
+  PieChart as PieIcon, CheckCircle2, ArrowUpRight, PlusCircle, MessageSquare
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
@@ -13,7 +13,6 @@ import {
 } from 'recharts';
 import { api } from '../../services/api';
 import { DocumentCard } from '../../components/dashboard/document-card';
-import { formatBytes } from '../../utils/format';
 
 interface DocumentData {
   id: string;
@@ -28,11 +27,8 @@ interface DocumentData {
   createdAt: string;
 }
 
-const COLORS = ['#6366f1', '#3b82f6', '#f59e0b'];
+const COLORS = ['#6366f1', '#a855f7', '#ec4899'];
 
-/**
- * Main dashboard view for uploads and file listing.
- */
 export default function DashboardPage() {
   // Fetch all documents using TanStack Query
   const { data: documents = [], isLoading } = useQuery({
@@ -43,7 +39,6 @@ export default function DashboardPage() {
     },
   });
 
-  // Calculate statistics
   const totalDocs = documents.length;
   const processedDocs = documents.filter((d) => d.status === 'completed').length;
   const processingDocs = documents.filter((d) => d.status === 'processing' || d.status === 'pending').length;
@@ -69,21 +64,12 @@ export default function DashboardPage() {
       else txt++;
     });
 
-    if (totalDocs === 0) {
-      // Mock data for display when empty
-      return [
-        { name: 'PDF Docs', value: 4 },
-        { name: 'DOCX Files', value: 2 },
-        { name: 'TXT Files', value: 1 },
-      ];
-    }
-
     return [
       { name: 'PDF Docs', value: pdf },
       { name: 'DOCX Files', value: docx },
       { name: 'TXT Files', value: txt },
     ].filter((item) => item.value > 0);
-  }, [documents, totalDocs]);
+  }, [documents]);
 
   // Group uploads by date for Area Chart (last 7 days)
   const uploadActivityData = React.useMemo(() => {
@@ -107,24 +93,11 @@ export default function DashboardPage() {
       }
     });
 
-    if (totalDocs === 0) {
-      // Return clean mock trend data
-      return [
-        { dateStr: 'Mon', count: 1 },
-        { dateStr: 'Tue', count: 3 },
-        { dateStr: 'Wed', count: 2 },
-        { dateStr: 'Thu', count: 5 },
-        { dateStr: 'Fri', count: 3 },
-        { dateStr: 'Sat', count: 6 },
-        { dateStr: 'Sun', count: 4 },
-      ];
-    }
-
     return last7Days.map((d) => ({
       dateStr: d.dateStr,
       count: d.count,
     }));
-  }, [documents, totalDocs]);
+  }, [documents]);
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto pb-10">
@@ -146,9 +119,9 @@ export default function DashboardPage() {
       {/* Overview Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         {/* Total Documents */}
-        <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex items-center justify-between">
+        <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex items-center justify-between shadow-sm">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-widest">Total Documents</span>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Total Documents</span>
             <h3 className="text-2xl font-black text-white">{isLoading ? '...' : totalDocs}</h3>
           </div>
           <div className="p-3 bg-indigo-500/5 text-indigo-400 rounded-xl border border-indigo-500/10">
@@ -157,9 +130,9 @@ export default function DashboardPage() {
         </div>
 
         {/* Successful Summaries */}
-        <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex items-center justify-between">
+        <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex items-center justify-between shadow-sm">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-widest">Processed Summaries</span>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Processed Summaries</span>
             <h3 className="text-2xl font-black text-white">{isLoading ? '...' : processedDocs}</h3>
           </div>
           <div className="p-3 bg-emerald-500/5 text-emerald-400 rounded-xl border border-emerald-500/10">
@@ -168,20 +141,20 @@ export default function DashboardPage() {
         </div>
 
         {/* Processing Files */}
-        <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex items-center justify-between">
+        <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex items-center justify-between shadow-sm">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-widest">Analyzing Queue</span>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Analyzing Queue</span>
             <h3 className="text-2xl font-black text-white">{isLoading ? '...' : processingDocs}</h3>
           </div>
           <div className="p-3 bg-amber-500/5 text-amber-400 rounded-xl border border-amber-500/10">
-            <Loader2 className={`h-5 w-5 ${processingDocs > 0 ? 'animate-spin' : ''}`} />
+            <span className={`h-2 w-2 rounded-full bg-amber-400 ${processingDocs > 0 ? 'animate-ping' : ''}`} />
           </div>
         </div>
 
         {/* AI Success Rate */}
-        <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex items-center justify-between">
+        <div className="bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex items-center justify-between shadow-sm">
           <div className="space-y-1">
-            <span className="text-[10px] font-bold text-zinc-550 uppercase tracking-widest">AI Success Rate</span>
+            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">AI Success Rate</span>
             <h3 className="text-2xl font-black text-white">{isLoading ? '...' : `${successRate}%`}</h3>
           </div>
           <div className="p-3 bg-purple-500/5 text-purple-400 rounded-xl border border-purple-500/10">
@@ -191,85 +164,106 @@ export default function DashboardPage() {
       </div>
 
       {/* Analytics Recharts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {/* Upload Activity Chart */}
-        <div className="lg:col-span-8 bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <BarChart4 className="h-4.5 w-4.5 text-indigo-400" />
-              <div>
-                <h4 className="text-sm font-bold text-white tracking-tight">Upload Activity</h4>
-                <p className="text-[10px] text-zinc-500">File upload counts over the last 7 days</p>
-              </div>
-            </div>
-            {totalDocs === 0 && (
-              <span className="text-[9px] font-bold text-zinc-650 bg-zinc-900/50 border border-zinc-900 px-2 py-0.5 rounded-full uppercase">Demo Data</span>
-            )}
+      {totalDocs === 0 ? (
+        /* Zero Documents Welcome Quick Actions Grid */
+        <div className="rounded-2xl border border-dashed border-zinc-900 bg-zinc-950/10 p-12 text-center max-w-2xl mx-auto space-y-6">
+          <div className="space-y-2">
+            <h3 className="text-sm font-bold text-zinc-300">Welcome to Your AI Library</h3>
+            <p className="text-xs text-zinc-500 max-w-sm mx-auto leading-relaxed">
+              Upload your documents to unlock summaries, metadata extraction, search grids, and interactive chat panels.
+            </p>
           </div>
-          
-          <div className="h-64 w-full text-xs">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={uploadActivityData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2}/>
-                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="dateStr" stroke="#3f3f46" tickLine={false} />
-                <YAxis stroke="#3f3f46" tickLine={false} allowDecimals={false} />
-                <Tooltip 
-                  contentStyle={{ backgroundColor: '#09090b', borderColor: '#18181b', borderRadius: '12px' }}
-                  labelStyle={{ color: '#a1a1aa', fontWeight: 'bold' }}
-                />
-                <Area type="monotone" dataKey="count" stroke="#6366f1" strokeWidth={2} fillOpacity={1} fill="url(#colorCount)" name="Files Uploaded" />
-              </AreaChart>
-            </ResponsiveContainer>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
+            <Link href="/documents/add" className="rounded-xl border border-zinc-900 bg-zinc-955 p-4 text-left hover:border-accent/40 hover:bg-zinc-900/10 transition-all flex items-start gap-3">
+              <PlusCircle className="h-5 w-5 text-indigo-400 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-xs font-bold text-white">Upload Files</h4>
+                <p className="text-[10px] text-zinc-500 mt-0.5">Supports PDF, DOCX, TXT</p>
+              </div>
+            </Link>
+            <Link href="/dashboard/chat" className="rounded-xl border border-zinc-900 bg-zinc-955 p-4 text-left hover:border-accent/40 hover:bg-zinc-900/10 transition-all flex items-start gap-3">
+              <MessageSquare className="h-5 w-5 text-purple-400 shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-xs font-bold text-white">Interactive Chat</h4>
+                <p className="text-[10px] text-zinc-500 mt-0.5">Chat with files in real-time</p>
+              </div>
+            </Link>
           </div>
         </div>
-
-        {/* File Type Distribution */}
-        <div className="lg:col-span-4 bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex flex-col justify-between space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <PieIcon className="h-4.5 w-4.5 text-indigo-400" />
-              <div>
-                <h4 className="text-sm font-bold text-white tracking-tight">Format Breakdown</h4>
-                <p className="text-[10px] text-zinc-500">Distribution by file extensions</p>
+      ) : (
+        /* Real Recharts Data Visualization */
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Upload Activity Chart */}
+          <div className="lg:col-span-8 bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <BarChart4 className="h-4.5 w-4.5 text-indigo-400" />
+                <div>
+                  <h4 className="text-sm font-bold text-white tracking-tight">Upload Activity</h4>
+                  <p className="text-[10px] text-zinc-500">File upload counts over the last 7 days</p>
+                </div>
               </div>
             </div>
-            {totalDocs === 0 && (
-              <span className="text-[9px] font-bold text-zinc-650 bg-zinc-900/50 border border-zinc-900 px-2 py-0.5 rounded-full uppercase">Demo Data</span>
-            )}
+            
+            <div className="h-64 w-full text-xs">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={uploadActivityData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorCount" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="dateStr" stroke="#3f3f46" tickLine={false} />
+                  <YAxis stroke="#3f3f46" tickLine={false} allowDecimals={false} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#09090b', borderColor: '#18181b', borderRadius: '12px' }}
+                    labelStyle={{ color: '#a1a1aa', fontWeight: 'bold' }}
+                  />
+                  <Area type="monotone" dataKey="count" stroke="#6366f1" strokeWidth={2} fillOpacity={1} fill="url(#colorCount)" name="Files Uploaded" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
           </div>
 
-          <div className="h-56 w-full text-xs flex items-center justify-center">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={fileTypeDistribution}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={80}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {fileTypeDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip
-                  contentStyle={{ backgroundColor: '#09090b', borderColor: '#18181b', borderRadius: '12px' }}
-                />
-                <Legend iconSize={8} iconType="circle" wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} />
-              </PieChart>
-            </ResponsiveContainer>
+          {/* File Type Distribution */}
+          <div className="lg:col-span-4 bg-zinc-950/40 border border-zinc-900 p-5 rounded-2xl backdrop-blur-xl flex flex-col justify-between space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <PieIcon className="h-4.5 w-4.5 text-indigo-400" />
+                <div>
+                  <h4 className="text-sm font-bold text-white tracking-tight">Format Breakdown</h4>
+                  <p className="text-[10px] text-zinc-500">Distribution by file extensions</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="h-56 w-full text-xs flex items-center justify-center">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={fileTypeDistribution}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={80}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {fileTypeDistribution.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    contentStyle={{ backgroundColor: '#09090b', borderColor: '#18181b', borderRadius: '12px' }}
+                  />
+                  <Legend iconSize={8} iconType="circle" wrapperStyle={{ fontSize: '10px', paddingTop: '10px' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
-
-      </div>
+      )}
 
       {/* Recent Uploads Grid */}
       <div className="space-y-4.5">
@@ -297,7 +291,7 @@ export default function DashboardPage() {
           <div className="rounded-2xl border border-zinc-900 border-dashed bg-zinc-950/20 p-12 text-center">
             <FileText className="h-10 w-10 text-zinc-700 mx-auto mb-4" />
             <h4 className="text-sm font-bold text-zinc-300">Your library is empty</h4>
-            <p className="text-xs text-zinc-550 mt-1 max-w-xs mx-auto">
+            <p className="text-xs text-zinc-555 mt-1 max-w-xs mx-auto">
               Start by uploading your files or documents under "Add Document" to generate AI summaries.
             </p>
           </div>
@@ -318,7 +312,6 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
-
     </div>
   );
 }

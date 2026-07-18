@@ -1,23 +1,13 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import QueryProvider from '../providers/query-provider';
 import AuthProvider from '../providers/auth-provider';
 import { ThemeProvider } from '../providers/theme-provider';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+import { GlobalChatWidget } from '../components/public/GlobalChatWidget';
 
 export const metadata: Metadata = {
-  title: 'DocuMind AI - Intelligent Document Assistant',
-  description: 'Upload, analyze, and chat with your documents using AI-powered insights, metadata extraction, and smart summaries.',
+  title: 'DocuMind AI - AI Knowledge Intelligence Platform',
+  description: 'Unlock and synthesize unstructured documents into interactive knowledge structures with Gemini AI.',
 };
 
 export default function RootLayout({
@@ -26,12 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-background text-foreground font-sans selection:bg-indigo-500/30 selection:text-white">
+    <html lang="en" className="h-full antialiased">
+      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-indigo-500/30 selection:text-white">
         <QueryProvider>
           <ThemeProvider>
             <AuthProvider>
               {children}
+              <GlobalChatWidget />
             </AuthProvider>
           </ThemeProvider>
         </QueryProvider>
@@ -39,4 +30,3 @@ export default function RootLayout({
     </html>
   );
 }
-

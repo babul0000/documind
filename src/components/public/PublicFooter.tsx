@@ -51,59 +51,54 @@ export function PublicFooter() {
               <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">Product</h3>
               <ul role="list" className="mt-4 space-y-2.5">
                 <li>
-                  <Link href="/#features" className="text-xs text-muted hover:text-foreground transition-colors">
-                    Features
+                  <Link href="/" className="text-xs text-muted hover:text-foreground transition-colors">
+                    Home
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#how-it-works" className="text-xs text-muted hover:text-foreground transition-colors">
-                    How it Works
+                  <Link href="/documents" className="text-xs text-muted hover:text-foreground transition-colors font-semibold text-indigo-400">
+                    Explore Documents
                   </Link>
                 </li>
                 <li>
                   <Link href="/dashboard" className="text-xs text-muted hover:text-foreground transition-colors">
-                    Workspace
+                    Dashboard Workspace
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">Resources</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">Company & Press</h3>
               <ul role="list" className="mt-4 space-y-2.5">
                 <li>
-                  <Link href="/blog" className="text-xs text-muted hover:text-foreground transition-colors">
-                    Blog
+                  <Link href="/about" className="text-xs text-muted hover:text-foreground transition-colors">
+                    About DocuMind
                   </Link>
                 </li>
                 <li>
-                  <Link href="/#faq" className="text-xs text-muted hover:text-foreground transition-colors">
-                    FAQ
+                  <Link href="/blog" className="text-xs text-muted hover:text-foreground transition-colors">
+                    Technical Blog
                   </Link>
                 </li>
                 <li>
                   <Link href="/contact" className="text-xs text-muted hover:text-foreground transition-colors">
-                    Contact Support
+                    Contact & Support
                   </Link>
                 </li>
               </ul>
             </div>
             <div className="col-span-2 md:col-span-1">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">Legal & Info</h3>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-foreground">Security & Legal</h3>
               <ul role="list" className="mt-4 space-y-2.5">
-                <li>
-                  <Link href="/about" className="text-xs text-muted hover:text-foreground transition-colors">
-                    About Us
-                  </Link>
-                </li>
                 <li>
                   <Link href="/privacy" className="text-xs text-muted hover:text-foreground transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <a href="#" className="text-xs text-muted hover:text-foreground transition-colors">
+                  <Link href="/privacy" className="text-xs text-muted hover:text-foreground transition-colors">
                     Terms of Service
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>

@@ -152,7 +152,8 @@ export default function DocumentDetailsPage() {
     } catch (err) {
       // Fallback in case PUT is mapped or POST is overridden
       try {
-        await fetch(`http://localhost:5000/api/documents/${id}`, {
+        const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        await fetch(`${baseUrl}/documents/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

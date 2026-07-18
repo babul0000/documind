@@ -11,10 +11,18 @@ export interface KeyInfo {
   entities?: string[];
   actionItems?: string[];
   dates?: string[];
+  keyPoints?: string[];
+  importantPeople?: string[];
+  importantDates?: string[];
+  confidenceScore?: number;
 }
 
 export interface Document {
   id: string;
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
   originalName: string;
   mimeType: string;
   size: number;
@@ -43,9 +51,18 @@ export interface Message {
 export interface Analytics {
   totalDocuments: number;
   totalSize: number;
+  totalAIRequests: number;
   typeDistribution: {
     name: string;
     value: number;
+  }[];
+  documentsByCategory: {
+    name: string;
+    value: number;
+  }[];
+  monthlyUploads: {
+    month: string;
+    uploads: number;
   }[];
   statusDistribution: {
     status: string;
