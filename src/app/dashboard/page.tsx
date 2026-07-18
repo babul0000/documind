@@ -281,7 +281,7 @@ export default function DashboardPage() {
               <p className="text-[10px] text-zinc-500">The last 3 files added to your library</p>
             </div>
           </div>
-          <Link href="/dashboard/explore" className="text-xs text-indigo-400 font-bold hover:underline flex items-center gap-1">
+          <Link href="/documents" className="text-xs text-indigo-400 font-bold hover:underline flex items-center gap-1">
             <span>Explore all</span>
             <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>

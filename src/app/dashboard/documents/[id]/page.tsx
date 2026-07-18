@@ -260,7 +260,7 @@ export default function DocumentDetailsPage() {
         <AlertCircle className="h-10 w-10 text-rose-400 mb-3.5" />
         <h3 className="font-bold text-white text-base">Document not found</h3>
         <p className="text-xs text-rose-300 mt-1 max-w-sm">The document may have been deleted or the access permission is missing.</p>
-        <Link href="/dashboard/explore" className="mt-4">
+        <Link href="/documents" className="mt-4">
           <Button variant="outline" className="h-9.5 text-xs rounded-xl border-zinc-800 flex items-center gap-1.5">
             <ChevronLeft className="h-4 w-4" />
             <span>Back to explore</span>
@@ -282,7 +282,7 @@ export default function DocumentDetailsPage() {
     <div className="space-y-6 pb-10">
       {/* Back Header */}
       <div className="flex items-center justify-between">
-        <Link href="/dashboard/explore">
+        <Link href="/documents">
           <button className="h-9 text-xs font-bold text-zinc-450 hover:text-white bg-zinc-955 hover:bg-zinc-900 border border-zinc-900 rounded-xl px-3.5 flex items-center gap-1.5 transition-all">
             <ChevronLeft className="h-4 w-4" />
             <span>All Documents</span>

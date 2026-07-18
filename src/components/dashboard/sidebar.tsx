@@ -27,17 +27,17 @@ export function Sidebar({ className }: SidebarProps) {
     },
     {
       name: 'Explore Documents',
-      href: '/dashboard/explore',
+      href: '/documents',
       icon: Compass,
     },
     {
       name: 'Add Document',
-      href: '/dashboard/documents/add',
+      href: '/documents/add',
       icon: PlusCircle,
     },
     {
       name: 'Manage Documents',
-      href: '/dashboard/documents/manage',
+      href: '/documents/manage',
       icon: FolderOpen,
     },
     {
