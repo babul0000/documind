@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { BrainCircuit, AlertCircle, Sparkles } from 'lucide-react';
+import { BrainCircuit, AlertCircle } from 'lucide-react';
 import { signIn, signUp } from '../../../lib/auth-client';
 import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
@@ -41,7 +41,7 @@ export default function LoginPage() {
     setGeneralError(null);
     setIsLoading(true);
     try {
-      const { data: authData, error: authError } = await signIn.email({
+      const { error: authError } = await signIn.email({
         email: data.email,
         password: data.password,
         callbackURL: '/dashboard',
@@ -50,8 +50,9 @@ export default function LoginPage() {
       if (authError) {
         throw new Error(authError.message || 'Invalid email or password credentials.');
       }
-    } catch (err: any) {
-      setGeneralError(err.message || 'Invalid email or password credential.');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Invalid email or password credential.';
+      setGeneralError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -64,45 +65,12 @@ export default function LoginPage() {
         provider: 'google',
         callbackURL: '/dashboard',
       });
-    } catch (err: any) {
-      setGeneralError(err.message || 'Google authentication failed.');
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Google authentication failed.';
+      setGeneralError(msg);
     }
   };
 
-  const handleDemoLogin = async () => {
-    setGeneralError(null);
-    setIsLoading(true);
-    const demoData = {
-      email: 'demo@documind.com',
-      password: 'demopassword123',
-    };
-    try {
-      // 1. Try to sign in first
-      const { data: signInData, error: signInError } = await signIn.email({
-        email: demoData.email,
-        password: demoData.password,
-        callbackURL: '/dashboard',
-      });
-
-      // 2. If user not found, auto-provision
-      if (signInError) {
-        const { data: signUpData, error: signUpError } = await signUp.email({
-          email: demoData.email,
-          password: demoData.password,
-          name: 'Demo Account',
-          callbackURL: '/dashboard',
-        });
-
-        if (signUpError) {
-          throw new Error(signUpError.message || 'Demo account provisioning failed.');
-        }
-      }
-    } catch (err: any) {
-      setGeneralError(err.message || 'Demo Login failed.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#050505] px-4 py-12 relative overflow-hidden">
@@ -159,14 +127,14 @@ export default function LoginPage() {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 gap-3.5">
+          <div className="flex flex-col gap-3.5">
             {/* Google OAuth Login */}
             <Button
               type="button"
               variant="outline"
               onClick={handleGoogleLogin}
               disabled={isLoading}
-              className="h-11 rounded-xl text-xs font-bold border-zinc-800 hover:bg-zinc-900/60 flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-xl text-xs font-bold border-zinc-800 hover:bg-zinc-900/60 flex items-center justify-center gap-2"
             >
               {/* Google G logo SVG */}
               <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor">
@@ -175,19 +143,7 @@ export default function LoginPage() {
                 <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
               </svg>
-              <span>Google</span>
-            </Button>
-
-            {/* Quick Demo Login */}
-            <Button
-              type="button"
-              variant="secondary"
-              onClick={handleDemoLogin}
-              disabled={isLoading}
-              className="h-11 rounded-xl text-xs font-bold bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/10 flex items-center justify-center gap-2"
-            >
-              <Sparkles className="h-4 w-4 shrink-0 text-indigo-400 animate-pulse" />
-              <span>Demo Account</span>
+              <span>Continue with Google</span>
             </Button>
           </div>
         </CardContent>

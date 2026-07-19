@@ -116,8 +116,15 @@ export function Sidebar({ className, isOpen, onClose }: SidebarProps) {
       {/* User Footer Profile */}
       <div className="border-t border-border pt-4 mt-auto">
         <div className="flex items-center gap-3 px-2 py-1.5 mb-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted-bg border border-border font-bold text-white text-sm">
-            {user?.name?.slice(0, 2).toUpperCase() || 'DM'}
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-muted-bg border border-border overflow-hidden">
+            {user?.image ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={user.image} alt={user.name} className="h-full w-full rounded-xl object-cover" />
+            ) : (
+              <span className="font-bold text-white text-sm">
+                {user?.name?.slice(0, 2).toUpperCase() || 'DM'}
+              </span>
+            )}
           </div>
           <div className="flex-1 overflow-hidden">
             <h4 className="text-xs font-bold text-white truncate leading-snug">{user?.name}</h4>

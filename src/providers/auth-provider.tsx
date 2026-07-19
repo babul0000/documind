@@ -29,10 +29,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         id: session.user.id,
         name: session.user.name,
         email: session.user.email,
+        image: session.user.image || undefined,
       }
     : null;
 
   const loading = isPending;
+
+  // Synchronize Better Auth token to localStorage for dynamic cross-origin API authorization fallback
+  useEffect(() => {
+    if (session && (session as any).session?.token) {
+      localStorage.setItem("better-auth.session_token", (session as any).session.token);
+    } else if (!isPending && !session) {
+      localStorage.removeItem("better-auth.session_token");
+    }
+  }, [session, isPending]);
 
   // Protect client side routes
   useEffect(() => {

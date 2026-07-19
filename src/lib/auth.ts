@@ -11,12 +11,22 @@ const cleanMongoUri = mongoUri.includes("localhost")
 const client = new MongoClient(cleanMongoUri);
 const db = client.db("documind");
 
+const vercelUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined;
+
+const trustedOrigins = [
+    "https://documind-rose-five.vercel.app"
+];
+if (process.env.VERCEL_URL) {
+    trustedOrigins.push(`https://${process.env.VERCEL_URL}`);
+}
+
 export const auth = betterAuth({
     // Disabling client option here disables transactions, allowing compatibility with standalone MongoDB local servers
     database: mongodbAdapter(db),
     emailAndPassword: {
         enabled: true,
     },
+    trustedOrigins: trustedOrigins,
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID || "placeholder_google_client_id",
@@ -27,6 +37,6 @@ export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET || "documind_better_auth_fallback_secret_98765",
     
     // Better Auth uses this to construct redirect URIs. We default to localhost:3000.
-    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000",
+    baseURL: process.env.BETTER_AUTH_URL || vercelUrl || "http://localhost:3000",
 });
 export default auth;

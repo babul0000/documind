@@ -33,9 +33,7 @@ export function PublicNavbar() {
 
   const links = [
     { name: 'Home', href: '/' },
-    user 
-      ? { name: 'Profile', href: '/profile' }
-      : { name: 'Explore Documents', href: '/documents' },
+    { name: 'Explore Documents', href: '/documents' },
     { name: 'About', href: '/about' },
     { name: 'Blog', href: '/blog' },
     { name: 'Contact', href: '/contact' },
@@ -85,8 +83,15 @@ export function PublicNavbar() {
                 className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-border bg-card-bg/60 hover:bg-muted-bg text-left transition-all cursor-pointer"
               >
                 {/* Initial Avatar */}
-                <div className="h-7 w-7 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center font-bold text-xs text-white uppercase shrink-0">
-                  {user.name?.slice(0, 2).toUpperCase() || 'DM'}
+                <div className="h-7 w-7 rounded-lg bg-zinc-900 border border-zinc-800 flex items-center justify-center overflow-hidden shrink-0">
+                  {user.image ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={user.image} alt={user.name} className="h-full w-full object-cover rounded-lg" />
+                  ) : (
+                    <span className="font-bold text-xs text-white uppercase">
+                      {user.name?.slice(0, 2).toUpperCase() || 'DM'}
+                    </span>
+                  )}
                 </div>
                 <div className="hidden lg:block min-w-0 pr-1 select-none">
                   <h4 className="text-[11px] font-bold text-white leading-tight truncate max-w-[100px]">{user.name}</h4>
@@ -100,8 +105,15 @@ export function PublicNavbar() {
                 <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-border bg-card-bg p-4.5 shadow-2xl z-55 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
                   {/* User Profile Info */}
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 font-extrabold text-white text-sm">
-                      {user.name?.slice(0, 2).toUpperCase() || 'DM'}
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+                      {user.image ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={user.image} alt={user.name} className="h-full w-full object-cover rounded-xl" />
+                      ) : (
+                        <span className="font-extrabold text-white text-sm">
+                          {user.name?.slice(0, 2).toUpperCase() || 'DM'}
+                        </span>
+                      )}
                     </div>
                     <div className="min-w-0">
                       <h4 className="text-xs font-extrabold text-white truncate">{user.name}</h4>
@@ -208,8 +220,15 @@ export function PublicNavbar() {
               <div className="flex flex-col gap-3">
                 {/* Profile card metadata details */}
                 <div className="flex items-center gap-3 bg-card-bg/40 border border-border p-3.5 rounded-xl">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 font-bold text-white text-xs">
-                    {user?.name?.slice(0, 2).toUpperCase() || 'DM'}
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 overflow-hidden">
+                    {user?.image ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={user.image} alt={user.name} className="h-full w-full object-cover rounded-xl" />
+                    ) : (
+                      <span className="font-bold text-white text-xs">
+                        {user?.name?.slice(0, 2).toUpperCase() || 'DM'}
+                      </span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0 font-medium">
                     <h4 className="text-xs font-bold text-white truncate leading-snug">{user?.name}</h4>

@@ -4,6 +4,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
  * Reads cookie values on the client side.
  */
 function getCookie(name: string): string | null {
+  if (typeof window !== 'undefined') {
+    if (name === "better-auth.session_token" || name === "__Secure-better-auth.session_token") {
+      const localToken = localStorage.getItem("better-auth.session_token");
+      if (localToken) return localToken;
+    }
+  }
   if (typeof document === 'undefined') return null;
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -23,7 +29,7 @@ const getHeaders = (isMultipart: boolean = false): HeadersInit => {
   }
   
   if (typeof window !== 'undefined') {
-    const token = getCookie("better-auth.session_token");
+    const token = getCookie("better-auth.session_token") || getCookie("__Secure-better-auth.session_token");
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
@@ -92,7 +98,7 @@ export const api = {
       // Allow sending session cookies (HttpOnly) cross-origin
       xhr.withCredentials = true;
       
-      const token = getCookie("better-auth.session_token");
+      const token = getCookie("better-auth.session_token") || getCookie("__Secure-better-auth.session_token");
       if (token) {
         xhr.setRequestHeader('Authorization', `Bearer ${token}`);
       }

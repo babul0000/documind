@@ -76,10 +76,15 @@ export default function ProfilePage() {
           <div className="absolute top-1/2 right-10 -translate-y-1/2 w-48 h-48 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
           <div className="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">
             {/* User Profile Image */}
-            <div className="h-24 w-24 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-1 shrink-0 shadow-lg">
-              <div className="h-full w-full rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center font-extrabold text-3xl text-white uppercase select-none">
-                {user.name?.slice(0, 2).toUpperCase() || 'DM'}
-              </div>
+            <div className="h-24 w-24 rounded-full bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 p-1 shrink-0 shadow-lg overflow-hidden flex items-center justify-center">
+              {user.image ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={user.image} alt={user.name} className="h-full w-full rounded-full object-cover" />
+              ) : (
+                <div className="h-full w-full rounded-full bg-zinc-950 border border-zinc-900 flex items-center justify-center font-extrabold text-3xl text-white uppercase select-none">
+                  {user.name?.slice(0, 2).toUpperCase() || 'DM'}
+                </div>
+              )}
             </div>
 
             <div className="space-y-2 flex-1 min-w-0">
