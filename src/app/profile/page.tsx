@@ -3,9 +3,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { 
-  User, Mail, Calendar, Shield, LayoutDashboard, FileText, 
-  Settings, Award, Clock, ArrowRight, ShieldCheck, HardDrive 
+import {
+  User, Mail, Calendar, Shield, LayoutDashboard, FileText,
+  Settings, Award, Clock, ArrowRight, ShieldCheck, HardDrive
 } from 'lucide-react';
 import { useAuth } from '../../hooks/use-auth';
 import { api } from '../../services/api';
@@ -69,7 +69,7 @@ export default function ProfilePage() {
       <PublicNavbar />
 
       <main className="flex-1 max-w-4xl mx-auto px-6 py-12 md:px-8 w-full space-y-8 animate-in fade-in duration-300">
-        
+
         {/* Profile Card Header */}
         <section className="rounded-2xl border border-border bg-card-bg p-8 relative overflow-hidden shadow-md">
           {/* Decorative glowing blobs */}
@@ -126,7 +126,7 @@ export default function ProfilePage() {
               {docsLoading ? '...' : `${docs.length} Files`}
             </div>
             <p className="text-[10px] text-zinc-500">
-              Index limits: {docs.length} / 50 total documents.
+              Index limits: {docs.length} / 50 total documents
             </p>
           </div>
 
